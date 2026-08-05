@@ -238,7 +238,7 @@ module monan_chemistry_interface
     call mpas_pool_get_array(diag_physics,'o3clim'    ,o3clim    )
     call mpas_pool_get_array(diag,'o3'    ,o3    )
 
-  print *, 'LFR-DBG: MPAS_to_chemistry: before filling _p arrays ',size(zgrid,1),size(zgrid,2),nVertLevels; call flush(6)
+  print *, 'LFR-DBG: MPAS_to_chemistry: before filling _p arrays ',size(zgrid,1),size(zgrid,2),nVertLevels!; call flush(6)
     do i = 1,nCells
         do k = 1, nVertLevels
             qv_p(k,i) = max(0.,qv(k,i))

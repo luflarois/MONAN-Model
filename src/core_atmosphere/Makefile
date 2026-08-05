@@ -70,7 +70,7 @@ utilities: $(PHYSCORE)
 	( cd utils; $(MAKE) all PHYSICS="$(PHYSICS)" )
 
 atmcore: $(PHYSCORE) dycore diagcore $(OBJS)
-	ar -ru libdycore.a $(OBJS) dynamics/*.o $(PHYS_OBJS) diagnostics/*.o
+	ar -ru libdycore.a $(OBJS) dynamics/*.o $(PHYS_OBJS) diagnostics/*.o $(UTILS_C_OBJS) $(CHEM_OBJS) $(TUV_OBJS) $(RELACS_TUV_OBJS)
 
 mpas_atm_core_interface.o: mpas_atm_core.o
 
@@ -97,7 +97,7 @@ clean:
 	$(RM) $@ $*.mod
 ifeq "$(GEN_F90)" "true"
 	$(CPP) $(CPPFLAGS) $(PHYSICS) $(CPPINCLUDES) -I./inc $< > $*.f90
-	$(FC) $(FFLAGS) -c $*.f90 $(FCINCLUDES) -I../framework -I../operators -I./physics -I./dynamics -I./diagnostics -I./physics/physics_monan -I./physics/physics_wrf -I./physics/physics_mmm -I./physics/physics_noaa/UGWP -I../external/esmf_time_f90
+	$(FC) $(FFLAGS) -c $*.f90 $(FCINCLUDES) -I../framework -I../operators -I./physics -I./dynamics -I./diagnostics -I./physics/physics_monan -I./physics/physics_wrf -I./physics/physics_mmm -I./physics/physics_noaa/UGWP -I../external/esmf_time_f90 -I./chemistry
 else
-	$(FC) $(CPPFLAGS) $(PHYSICS) $(FFLAGS) -c $*.F $(CPPINCLUDES) $(FCINCLUDES) -I./inc -I../framework -I../operators -I./physics -I./dynamics -I./diagnostics -I./physics/physics_monan -I./physics/physics_wrf -I./physics/physics_mmm -I./physics/physics_noaa/UGWP -I../external/esmf_time_f90
+	$(FC) $(CPPFLAGS) $(PHYSICS) $(FFLAGS) -c $*.F $(CPPINCLUDES) $(FCINCLUDES) -I./inc -I../framework -I../operators -I./physics -I./dynamics -I./diagnostics -I./physics/physics_monan -I./physics/physics_wrf -I./physics/physics_mmm -I./physics/physics_noaa/UGWP -I../external/esmf_time_f90 -I./chemistry
 endif

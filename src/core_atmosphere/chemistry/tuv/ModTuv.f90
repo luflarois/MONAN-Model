@@ -446,7 +446,7 @@ module ModTuv
             if (initialized) then
                 print *, 'ERROR: TUV already initialized!'
                 print *, '### Please, check your code ###'
-                call flush (6)
+                !call flush (6)
                 stop
             end if
             filesHome = ''
@@ -809,7 +809,7 @@ module ModTuv
             call mpi_bcast(sw, ks*kw, MPI_REAL, 0, MPI_COMM_WORLD, ierr)
             call MPI_BCAST(initialized, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
         end if
-        print *, '-------------------------------------------------'; call flush (6)
+        print *, '-------------------------------------------------'!; call flush (6)
 
     end subroutine InitTuv
 
@@ -15903,7 +15903,7 @@ module ModTuv
 
         wbioStart = j
         label(j) = 'PAR, 400-700 nm, umol m-2 s-1'
-        print *, j, label(j), wbioStart; call flush (6)
+        print *, j, label(j), wbioStart!; call flush (6)
         do iw = 1, nw - 1
             if (wc(iw) > 400. .and. wc(iw) < 700.) then
                 s(j, iw) = 8.36e-3*wc(iw)
@@ -20376,7 +20376,7 @@ module ModTuv
         character(LEN=*), intent(IN) :: message
 
         write (noPr, *) message
-        call flush (noPr)
+        !call flush (noPr)
 
     end subroutine alert
 

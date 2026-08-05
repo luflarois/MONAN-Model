@@ -31,7 +31,7 @@ monan_chemistry_interface.o: monan_chemistry_interface.f90 monan_chemistry_vars.
 
 # Regra para compilar .f90 em .o
 .f90.o:
-	$(FC) $(FFLAGS) -c $< $(FCINCLUDES) -I.. -I../../framework -I../../external/esmf_time_f90 -I./tuv -I./relacs_tuv -I../physics
+	$(FC) $(FFLAGS) -r -c $< $(FCINCLUDES) -I.. -I../../framework -I../../external/esmf_time_f90 -I./tuv -I./relacs_tuv -I../physics
 
 clean:
 	$(RM) *.o *.mod *.i

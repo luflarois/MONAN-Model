@@ -1140,13 +1140,13 @@ contains
                 lv = lv + 1
                 if (lv >= 33) then
                    print *, 'Lv greater or equal 33';
-                   call flush (6)
+                   !call flush (6)
                    stop 'mclat1_fastjx'
                 end if
                 cycle
              else
                 print *, 'pressure data improperly ordered';
-                call flush (6)
+                !call flush (6)
                 stop 'mclat2_fastjx'
              end if
           end do

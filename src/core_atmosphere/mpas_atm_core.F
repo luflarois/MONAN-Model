@@ -998,6 +998,9 @@ module atm_core
       use mpas_atmphys_update
 #endif
       use mpas_atm_halos, only: exchange_halo_group
+      !LFR
+      use modChem, only: chemistry_driver
+      !LFR
    
       implicit none
    
@@ -1045,7 +1048,7 @@ module atm_core
       print *,  'Calling chemistry driver .... ',iTimestep
       call chemistry_driver(domain, iTimestep, currTime)
 !LFR-DBG
-      
+
       ! --- Cold-start substepping logic (Skamarock/JCSDA, ported for MONAN 1.4.5-rc) ---
       ! Determine whether this full timestep falls within the substepping window
       call mpas_pool_get_config(domain % blocklist % configs, 'config_coldstart_substeps',         config_coldstart_substeps)

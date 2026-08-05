@@ -135,7 +135,7 @@ print *,'LFR-DBG: Starting chemistry_driver - iTimestep : ', iTimestep
 
                 if(iTimestep == 1) then
                     !print *, 'Allocating chemistry arrays...'
-                    call allocate_chem_species(nChemSpecies, nVertLevels, nCells)
+                    call alloc_chem(nVertLevels,nCells,nVertLevels)
                 end if
 
                 !print *, 'Allocating chemistry arrays...'
@@ -151,7 +151,7 @@ print *,'LFR-DBG: Starting chemistry_driver - iTimestep : ', iTimestep
                 end do
 !$OMP END PARALLEL DO     
 
-                call test_rodas3_dynt() !Only to test if works
+                !call test_rodas3_dynt() !Only to test if works
 
                 !if(iTimestep == 1) then
                 !    chem_conc_p = 0.0
