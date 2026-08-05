@@ -1041,6 +1041,11 @@ module atm_core
       endif
 #endif
 
+!LFR-DBG
+      print *,  'Calling chemistry driver .... ',iTimestep
+      call chemistry_driver(domain, iTimestep, currTime)
+!LFR-DBG
+      
       ! --- Cold-start substepping logic (Skamarock/JCSDA, ported for MONAN 1.4.5-rc) ---
       ! Determine whether this full timestep falls within the substepping window
       call mpas_pool_get_config(domain % blocklist % configs, 'config_coldstart_substeps',         config_coldstart_substeps)

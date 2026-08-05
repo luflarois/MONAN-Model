@@ -15,13 +15,20 @@ ifdef PHYSICS
     PHYS_OBJS = libphys/*.o
 endif
 
+#Chemistry and TUV objects
+CHEM_OBJS = chemistry/*.o
+TUV_OBJS = chemistry/tuv/*.o
+RELACS_TUV_OBJS = chemistry/relacs_tuv/*.o
+UTILS_C_OBJS = chemistry/utils_c/*.o
+#
+
 OBJS = mpas_atm_core.o \
        mpas_atm_core_interface.o \
        mpas_atm_dimensions.o \
        mpas_atm_threading.o \
        mpas_atm_halos.o
 
-all: $(PHYSCORE) dycore diagcore atmcore utilities
+all: $(PHYSCORE) chem dycore diagcore atmcore utilities
 
 core_reg:
 	$(CPP) $(CPPFLAGS) $(CPPINCLUDES) $(PHYSICS) Registry.xml > Registry_processed.xml
@@ -39,6 +46,12 @@ post_build:
 	if [ ! -e $(ROOT_DIR)/default_inputs ]; then mkdir $(ROOT_DIR)/default_inputs; fi
 	cp default_inputs/* $(ROOT_DIR)/default_inputs/.
 	( cd $(ROOT_DIR)/default_inputs; for FILE in `ls -1`; do if [ ! -e ../$$FILE ]; then cp $$FILE ../.; fi; done )
+
+#Chemistry build
+chem: 
+	( cd chemistry; $(MAKE) all) 
+	( echo "****** compiling chemistry_monan ******" )
+#
 
 physcore: mpas_atm_dimensions.o
 	( cd physics; $(MAKE) all )
