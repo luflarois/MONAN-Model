@@ -14,11 +14,11 @@ module monan_chemistry_interface
     contains
 
     !=================================================================================================================
-    subroutine allocate_forall_chemistry(configs, nCells, nVertLevels, nChemSpecies)
+    subroutine allocate_forall_chemistry(nCells, nVertLevels, nChemSpecies)
     !=================================================================================================================
-    type(mpas_pool_type),intent(in):: configs
     integer, intent(in) :: nCells, nVertLevels, nChemSpecies
 
+print *,'LFR-DBG: Block 1'
     ! Alocações inalteradas (já estão corretas)
     if(.not.allocated(xlon_p) ) allocate(xlon_p(nCells)               )
     if(.not.allocated(xlat_p) ) allocate(xlat_p(nCells)               )
@@ -27,7 +27,7 @@ module monan_chemistry_interface
     if(.not.allocated(psfc_p) ) allocate(psfc_p(nCells)         )
     if(.not.allocated(ptop_p) ) allocate(ptop_p(nCells)         )
     if(.not.allocated(coszr_p)      ) allocate(coszr_p(nCells)              )
-
+print *,'LFR-DBG: Block 2'
     if(.not.allocated(o3_p)   ) allocate(o3_p(nVertlevels, nCells)    )
     if(.not.allocated(u_p)    ) allocate(u_p(nVertlevels, nCells)    )
     if(.not.allocated(v_p)    ) allocate(v_p(nVertlevels, nCells)    )
@@ -45,22 +45,22 @@ module monan_chemistry_interface
     if(.not.allocated(rho_p)  ) allocate(rho_p(nVertlevels, nCells)  )
     if(.not.allocated(rh_p)   ) allocate(rh_p(nVertlevels, nCells)   )
     if(.not.allocated(znu_p)  ) allocate(znu_p(nVertlevels, nCells)  )
-
+print *,'LFR-DBG: Block 3'
     if(.not. allocated(chem_conc_p)) allocate(chem_conc_p(nVertlevels, nCells, nChemSpecies) )
     if(.not. allocated(chem_tend_p)) allocate(chem_tend_p(nVertlevels, nCells, nChemSpecies) )
     if(.not. allocated(chem_tend_dyn_p)) allocate(chem_tend_dyn_p(nVertlevels, nCells, nChemSpecies) )
-
+print *,'LFR-DBG: Block 4'
     if(.not.allocated(w_p)    ) allocate(w_p(nVertlevels+1, nCells)    )
     if(.not.allocated(pres2_p)) allocate(pres2_p(nVertlevels+1, nCells))
     if(.not.allocated(t2_p)   ) allocate(t2_p(nVertlevels+1, nCells)   )
-
+print *,'LFR-DBG: Block 5'
     if(.not.allocated(qv_p)   ) allocate(qv_p(nVertlevels, nCells)   )
     if(.not.allocated(qc_p)   ) allocate(qc_p(nVertlevels, nCells)   )
     if(.not.allocated(qr_p)   ) allocate(qr_p(nVertlevels, nCells)   )
     if(.not.allocated(qi_p)   ) allocate(qi_p(nVertlevels, nCells)   )
     if(.not.allocated(qs_p)   ) allocate(qs_p(nVertlevels, nCells)   )
     if(.not.allocated(qg_p)   ) allocate(qg_p(nVertlevels, nCells)   )
-
+print *,'LFR-DBG: Block 6'
     if(.not.allocated(psfc_hyd_p)  ) allocate(psfc_hyd_p(nCells)          )
     if(.not.allocated(psfc_hydd_p) ) allocate(psfc_hydd_p(nCells)         )
     if(.not.allocated(pres_hyd_p)  ) allocate(pres_hyd_p(nVertlevels, nCells)  )
@@ -68,7 +68,7 @@ module monan_chemistry_interface
     if(.not.allocated(pres2_hyd_p) ) allocate(pres2_hyd_p(nVertlevels+1, nCells) )
     if(.not.allocated(pres2_hydd_p)) allocate(pres2_hydd_p(nVertlevels+1, nCells))
     if(.not.allocated(znu_hyd_p)   ) allocate(znu_hyd_p(nVertlevels, nCells)   )
-
+print *,'LFR-DBG: Block 7'
     end subroutine allocate_forall_chemistry
 
     !=================================================================================================================
@@ -197,9 +197,9 @@ module monan_chemistry_interface
     call mpas_pool_get_array(diag,'uReconstructZonal'     ,u               )
     call mpas_pool_get_array(diag,'uReconstructMeridional',v               )
     !Chemical species and tendencies
-    call mpas_pool_get_array(diag,'chem_conc'             ,chem_conc     )
-    call mpas_pool_get_array(diag,'chem_tend'             ,chem_tend     )
-    call mpas_pool_get_array(diag,'chem_tend_dyn'         ,chem_tend_dyn )
+    !call mpas_pool_get_array(diag,'chem_conc'             ,chem_conc     )
+    !call mpas_pool_get_array(diag,'chem_tend'             ,chem_tend     )
+    !call mpas_pool_get_array(diag,'chem_tend_dyn'         ,chem_tend_dyn )
 
    !print *, 'LFR-DBG: MPAS_to_chemistry: before get array 3 calls'; call flush(6)
     call mpas_pool_get_array(state,'rho_zz' ,rho_zz ,time_lev)
@@ -263,11 +263,11 @@ module monan_chemistry_interface
             zmid_p(k,i) = 0.5*(zgrid(k+1,i)+zgrid(k,i))
             dz_p(k,i)   = zgrid(k+1,i)-zgrid(k,i)
 
-            do n = 1, nChemSpecies
-                chem_conc_p(k,i,n) = chem_conc(k,i,n)
-                chem_tend_p(k,i,n) = chem_tend(k,i,n)
-                chem_tend_dyn_p(k,i,n) = chem_tend_dyn(k,i,n)
-            end do
+            !do n = 1, nChemSpecies
+            !    chem_conc_p(k,i,n) = chem_conc(k,i,n)
+            !    chem_tend_p(k,i,n) = chem_tend(k,i,n)
+            !    chem_tend_dyn_p(k,i,n) = chem_tend_dyn(k,i,n)
+            !end do
 
             !o3_p(k,i)   = o3(k,i)
         end do

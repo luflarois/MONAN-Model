@@ -1046,6 +1046,7 @@ module atm_core
 
 !LFR-DBG
       print *,  'Calling chemistry driver .... ',iTimestep
+      print *,'==============================================================================================================='
       call chemistry_driver(domain, iTimestep, currTime)
 !LFR-DBG
 

@@ -21,6 +21,13 @@ module modChem
       , transp_chem_index &
       , no_transp_chem_index &
       , block_end
+  use chem_list, only: &
+      nspecies  &
+      ,spc_name  &
+      ,spc_alloc &
+      ,transport &
+      ,on
+  use mem_spack, only: spack, spack_alloc, alloc_spack
 
   !use modFilesChem, only: read_Cams_Chem, mass_frac_to_molec_cm3, read_static_test, readBramsOut
 
@@ -81,7 +88,7 @@ contains
         type(block_type),pointer:: block
         
         integer :: mynum, nBlocks, thread, time_lev, i,k,n, ierr
-        integer, pointer:: nThreads, nChemSpecies, nCells
+        integer, pointer:: nThreads, nCells
         integer, pointer :: nVertLevels
         real (kind=RKIND), pointer :: config_dt
         real (kind=RKIND) :: conc
@@ -97,71 +104,80 @@ contains
         myNum = domain%dminfo%my_proc_id
 print *,'LFR-DBG: Starting chemistry_driver - iTimestep : ', iTimestep
         call mpas_pool_get_subpool(block%structs, 'mesh', mesh)
+print *,'LFR-DBG: 01'
         call mpas_pool_get_subpool(block%structs,'diag_physics',diag_physics)
+print *,'LFR-DBG: 02'
         call mpas_pool_get_subpool(block%structs, 'state', state)
+print *,'LFR-DBG: 03'
         call mpas_pool_get_subpool(block%structs, 'diag', diag)
-
+print *,'LFR-DBG: 04'
         call mpas_pool_get_dimension(mesh,'nVertLevels',nVertLevels)
-        call mpas_pool_get_dimension(mesh,'nChemSpecies', nChemSpecies)
+print *,'LFR-DBG: 05'
+!        call mpas_pool_get_dimension(mesh,'nSpecies', nSpecies)
+print *,'LFR-DBG: 06'
         call mpas_pool_get_dimension(mesh, 'nCells', nCells)
-!print *,'LFR-DBG: Retrieved dimensions - nVertLevels = ', nVertLevels, ' nChemSpecies = ', nChemSpecies, ' nCells = ', nCells
+print *,'LFR-DBG: 07'
+!print *,'LFR-DBG: Retrieved dimensions - nVertLevels = ', nVertLevels, ' nSpecies = ', nSpecies, ' nCells = ', nCells
         call mpas_pool_get_config(block % configs, 'config_dt', config_dt)
+print *,'LFR-DBG: 08'
 
         call mpas_get_time(curr_time=currTime, dateTimeString=timeStamp, ierr=ierr)
-
+print *,'LFR-DBG: 09'
 !print *,'LFR-DBG: Retrieved config_dt = ', config_dt       
         chem_timestep = config_dt/4.0 !LFR-DBG TBD: Chemistry timestep in seconds (to be set in config file later)
-!print *,'LFR-DBG: Set chem_timestep = ', chem_timestep
+print *,'LFR-DBG: Set chem_timestep = ', chem_timestep
 
          !- set the number of dynamics cycles inside each chemistry cycle:
          !- observe that 'config_dt' (timestep of grid) is used.
         !- set the number of dynamics cycles inside each chemistry cycle:
         !- observe that 'config_dt' (timestep of grid) is used.
         n_dyn_chem = max(1,nint(chem_timestep/config_dt))
-!print *,'LFR-DBG: Set n_dyn_chem = ', n_dyn_chem
+print *,'LFR-DBG: Set n_dyn_chem = ', n_dyn_chem
 
          !- chemistry is called every 'n_dyn_chem' steps:
          !- observe that 'iTimestep' is the current step of the grid.
         do while(associated(block))
-
+print *,'LFR-DBG: 10'
             call mpas_pool_get_dimension(block % dimensions, 'nThreads', nThreads)
-      
-            nChemSpecies = nspecies
+print *,'LFR-DBG: 11'      
             allocate(jphoto(nVertlevels, nCells, nr_photo))
-
+print *,'LFR-DBG: 12'
 
             if(mod(iTimestep, 4) == 0 .or. iTimestep == 1) then
                 !print *, 'Hello from chemistry_driver', iTimestep
+print *,'LFR-DBG: 12.1'
 
                 if(iTimestep == 1) then
                     !print *, 'Allocating chemistry arrays...'
+                    maxblock_size = nCells
                     call alloc_chem(nVertLevels,nCells,nVertLevels)
+                    call alloc_spack(maxblock_size = maxblock_size)
                 end if
-
+print *,'LFR-DBG: 12.2'
                 !print *, 'Allocating chemistry arrays...'
-                call allocate_forall_chemistry(block%configs, nCells, nVertLevels, nChemSpecies)
-
+                call allocate_forall_chemistry(nCells = nCells, nVertLevels = nVertLevels, nChemSpecies = nSpecies)
+print *,'LFR-DBG: 12.3'
                 !chemistry prep step:
                 time_lev = 1
-
+print *,'LFR-DBG: 13'
 !$OMP PARALLEL DO
                 do thread=1,nThreads
                     !print *,'Fazendo thread ', thread !, cellSolveThreadStart(thread), cellSolveThreadEnd(thread)
-                    call MPAS_to_chemistry(block%configs,mesh,state,time_lev,diag,diag_physics, nCells, nVertLevels, nChemSpecies)
+                    call MPAS_to_chemistry(block%configs,mesh,state,time_lev,diag,diag_physics, nCells, nVertLevels, nSpecies)
                 end do
 !$OMP END PARALLEL DO     
-
+print *,'LFR-DBG: 14'
                 !call test_rodas3_dynt() !Only to test if works
 
                 !if(iTimestep == 1) then
                 !    chem_conc_p = 0.0
-                    !call read_static_test(filename = 'data_chem_tst.csv', chem_out = chem_conc_p, nVertLevels = nVertLevels, nCells = nCells, xlat_p = xlat_p, xlon_p = xlon_p, nspecies = nChemSpecies)
+                    !call read_static_test(filename = 'data_chem_tst.csv', chem_out = chem_conc_p, nVertLevels = nVertLevels, nCells = nCells, xlat_p = xlat_p, xlon_p = xlon_p, nspecies = nSpecies)
                     !call read_Cams_Chem(filename = 'data_plev.nc',zmid = zmid_p,xlat = xlat_p, xlon = xlon_p &
-                    !                   , chem_out = chem_conc_p,nVertLevels = nVertLevels, nCells = nCells, nSpecies = nChemSpecies)
-                !    call readBramsOut(chem_out = chem_conc_p,xlat = xlat_p,xlon = xlon_p,nVertLevels = nVertLevels,nCells = nCells,nspecies_in = nChemSpecies)
+                    !                   , chem_out = chem_conc_p,nVertLevels = nVertLevels, nCells = nCells, nSpecies = nSpecies)
+                !    call readBramsOut(chem_out = chem_conc_p,xlat = xlat_p,xlon = xlon_p,nVertLevels = nVertLevels,nCells = nCells,nspecies_in = nSpecies)
 
                 !end if
-
+print *,'LFR-DBG: 15'
 !                print *, 'Calling chemistry driver...'
                 call Tuv_driver(           &
                  domain     = domain       &
@@ -216,7 +232,7 @@ write(ctime,fmt='(I2.2)') iTimestep
 
 
                 call chem_rodas3_dyndt( &
-                    nob = nCells &
+                    nob = nVertLevels &
                   , block_end = block_end &
                   , dtlt = config_dt &
                   , press = pres_hyd_p &
@@ -235,7 +251,7 @@ write(ctime,fmt='(I2.2)') iTimestep
                   , maxblock_size = maxblock_size &
                   )
 
-                call chemistry_to_MPAS(block%configs,diag,nChemSpecies,nVertLevels,nCells)
+                call chemistry_to_MPAS(block%configs,diag,nSpecies,nVertLevels,nCells)
 
                 call deallocate_forall_chemistry(block%configs)
     

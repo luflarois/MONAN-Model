@@ -67,12 +67,11 @@ module mem_spack
     contains
     !========================================================================
 
-    subroutine alloc_spack(chemistry, maxblock_size)
+    subroutine alloc_spack(maxblock_size)
 
         implicit none
         !integer, intent(in) :: nob_mem
         integer i, ii, nob, n
-        integer, intent(in) :: chemistry
         integer, intent(in) :: maxblock_size
 
         if (spack_alloc) then
@@ -120,12 +119,6 @@ module mem_spack
 
             allocate(spack(i)%dlr (1:maxblock_size, nspecies)) ;
             spack(i)%dlr = 0.0d0
-
-            !- for rodas 3 only for version 1
-            !if( chemistry == 4) then
-            !  allocate(spack(i)%dlr3  (1:maxblock_size,nspecies))    ;spack(i)%dlr3    = 0.0d0
-            !  allocate(spack(i)%sc_p_4 (1:maxblock_size,nspecies))   ;spack(i)%sc_p_4  = 0.0d0
-            !endif
 
             !- 1d variables
             allocate(spack(i)%temp (1:maxblock_size)) ;

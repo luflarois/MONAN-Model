@@ -178,8 +178,7 @@ contains
         type(spack_type_2d), allocatable, dimension(:, :) :: spack_2d
         
 
-        call get_number_nonzeros(nr_photo, nr, nspecies, spack(1)%rk(1, 1:nr), &
-        spack(1)%jphoto(1, 1:nr_photo), p00, maxnonzeros)
+        call get_number_nonzeros(nr_photo, nr, nspecies, maxnonzeros)
 
         sizeofmatrix = nspecies
         !maxblock_size = nvertlevels
@@ -190,7 +189,7 @@ contains
         ipos = 1
         allocate(jpos(maxnonzeros)) ;
         jpos = 1
-
+print *,'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxblock_size
         allocate(spack_2d(maxblock_size, nob))
         do i = 1, nob
             do ii = 1, maxblock_size
@@ -700,19 +699,18 @@ contains
 
 
 !--------------------------------------------------------------------------  
-  subroutine get_number_nonzeros(jppj,nr,nspecies,rk,jphoto,p00,nonzeros)
+  subroutine get_number_nonzeros(jppj,nr,nspecies,nonzeros)
 
     integer          , intent(in)    :: jppj
     integer          , intent(in)    :: nr
     integer          , intent(in)    :: nspecies
-    double precision , intent(inout) :: rk(nr)
-    double precision , intent(inout) :: jphoto(jppj)
-    real             , intent(in)    :: p00
-    integer          , intent(inout) :: nonzeros
+    integer          , intent(out) :: nonzeros
 
     double precision ,dimension(nspecies,nspecies) :: def_non_zeros 
     double precision ,dimension(nspecies) :: sc_p
     double precision  :: xlw,vapp(1),cosz(1),temp(1),press(1),att(1)
+    double precision  :: rk(nr)
+    double precision  :: jphoto(jppj)
     integer :: i,ji,jj
 
     jphoto(:) = 2.3333331d0
@@ -721,7 +719,7 @@ contains
     cosz(:) = 1.d0
     att(:)  = 1.0d0
     temp(:) = 273.15d0
-    press(:)= dble(p00)
+    press(:)= 1.0d5
     sc_p    = 1.d15 ! dummy concentration to get the maximum number
                     ! of possible non zero elements
 
@@ -746,6 +744,8 @@ contains
           endif
        enddo
     enddo
+
+    print *,'LFR-DBG: get_number_nonzeros: ',nonzeros
 
   end subroutine get_number_nonzeros
 
