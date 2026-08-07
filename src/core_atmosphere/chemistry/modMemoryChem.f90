@@ -83,6 +83,7 @@ print *,'LFR-DBG: alloc 10'
             stop 'ERROR!'
         end if
         allocate(last_accepted_dt(dim3), block_end(dim3))
+        block_end = dim2
 print *,'LFR-DBG: alloc 11'
         nspecies_chem_transported = 0
         transp_chem_index   (:)   = 0

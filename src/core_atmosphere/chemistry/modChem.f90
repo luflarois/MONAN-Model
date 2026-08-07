@@ -232,7 +232,8 @@ write(ctime,fmt='(I2.2)') iTimestep
 
 
                 call chem_rodas3_dyndt( &
-                    nob = nVertLevels &
+                    domain     = domain       &
+                  , nob = nVertLevels &
                   , block_end = block_end &
                   , dtlt = config_dt &
                   , press = pres_hyd_p &

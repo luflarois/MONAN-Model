@@ -673,7 +673,7 @@ contains
 
       !!
       if (iTimestep == 1) then
-          call InitTuv('/data/runArea/monan/MONAN-Model/tuvData/', myNum, 'RELACS', nCells = nCells, nVertLevels = nVertLevels, nr_photo = nr_photo)
+          call InitTuv('./tuvData/', myNum, 'RELACS', nCells = nCells, nVertLevels = nVertLevels, nr_photo = nr_photo)
       end if
       print *,'LFR-DBG - Inside TUV driver, timestep: ', iTimestep
       nz = nVertLevels - 1

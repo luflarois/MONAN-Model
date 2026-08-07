@@ -1,5 +1,6 @@
 module mod_chem_spack_rodas3_dyndt
-
+    use mpas_pool_routines
+    use mpas_derived_types
     use modMemoryChem, only: &
     chem_vars        ! Type
 
@@ -39,7 +40,8 @@ contains
 
     !========================================================================================
     subroutine chem_rodas3_dyndt( &
-        nob &
+        domain &
+      , nob &
       , block_end &
       , dtlt &
       , press &
@@ -62,6 +64,7 @@ contains
 
         implicit none
 
+        type(domain_type),   intent(inout):: domain
         integer,             intent(in) :: nob
         integer,             intent(in) :: block_end(:)
         integer,             intent(in) :: n_dyn_chem
@@ -171,12 +174,20 @@ contains
         integer :: i, ijk, n, j, k, ispc, ji, jj, k_, i_, j_, kij_, kij, ii
         double precision :: atol(nspecies)
         double precision :: rtol(nspecies)
+        integer :: proc
+        character(len = 256) :: flogname
+
 
         !integer :: maxblock_size
         double precision, allocatable, target :: rhs_tmp(:), sol_tmp(:)
 
         type(spack_type_2d), allocatable, dimension(:, :) :: spack_2d
         
+
+        proc = domain % dminfo % my_proc_id
+        write(flogname,fmt='(A,I8.8,A)') '/p/projetos/monan_chem/luiz.rodrigues/scripts_CD-CT/dataout/2026070100/Model/logs/rodas3_dyndt_proc_',proc,'.log'
+        open(10, file=flogname, status='replace', action='write', form='formatted')
+
 
         call get_number_nonzeros(nr_photo, nr, nspecies, maxnonzeros)
 
@@ -189,7 +200,7 @@ contains
         ipos = 1
         allocate(jpos(maxnonzeros)) ;
         jpos = 1
-print *,'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxblock_size
+write(10,*) 'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxblock_size
         allocate(spack_2d(maxblock_size, nob))
         do i = 1, nob
             do ii = 1, maxblock_size
@@ -219,16 +230,16 @@ print *,'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxblock_
             enddo
         end do
 
-
         do i = 1, nob !- loop over all blocks i) = nVertLevels
             !- copying structure from input to internal
+write(10,*) 'LFR-DBG: Filling variables for chemistry integration', i, block_end(i), nob, inob
             do ijk = 1, block_end(i) !index_g%block_end(i) - MONAN: the block_end is the number of levels
                 spack(inob)%press(ijk) = press(ijk,i)
                 spack(inob)%temp(ijk) = temp(ijk,i)
                 spack(inob)%vapp(ijk) = vapp(ijk,i)
                 spack(inob)%volmol(ijk) = (6.02d23 * 1d-15 * pmar) * (press(ijk,i)) / (8.314d0 * temp(ijk,i))
                 spack(inob)%volmol_i(ijk) = 1.0d0 / spack(inob)%volmol(ijk)
-
+write(10,*) 'LFR-DBG: vars filled for ',ijk,'temp= ',spack(inob)%temp(ijk)
                 !- no transported species section
                 do ispc = 1, nspecies_chem_no_transported
                     !- map the species to NO transported ones
@@ -241,7 +252,8 @@ print *,'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxblock_
             end do
             !- convert from brams chem (ppbm) arrays to spack (molec/cm3)
             !- transported species section
-            if (split_method == 'PARALLEL' .and. n_dyn_chem > 1) then
+write(10,*) 'LFR-DBG: checking split_method ',n_dyn_chem
+            if (trim(split_method) == 'PARALLEL' .and. n_dyn_chem > 1) then
                 do ijk = 1, block_end(i) !index_g%block_end(i)
 
                     do ispc = 1, nspecies_chem_transported
@@ -270,7 +282,7 @@ print *,'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxblock_
 
                 end do
             endif
-
+write(10,*) 'LFR-DBG: Photolisys section',trim(photojmethod)
             !- Photolysis section
             if (trim(photojmethod) == 'FAST-JX' .or. trim(photojmethod) == 'FAST-TUV') then
 
@@ -294,7 +306,7 @@ print *,'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxblock_
                 enddo
             endif
 
-
+write(10,*) 'LFR-DBG: Calling kinetic'
             !- compute kinetical and photochemical reactions (array: spack(inob)%rk)
             call kinetic(nr_photo, spack(inob)%jphoto &
             , spack(inob)%rk &
@@ -317,7 +329,7 @@ print *,'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxblock_
             !print *,'LFR-DBG: initial dt_chem,dt_min,dt_max,dt_new, time_c,time_f: ',i,dt_chem,dt_min, dt_max, dt_new, time_c, time_f
             time_c = 0.0d0
             time_f = dble(dtlt * n_dyn_chem)
-
+write(10,*) 'LFR-DBG: starting time-splitting integration',i,time_c,time_f,dt_chem
             run_until_integr_ends: do while (time_c + roundoff < time_f)
 
                 !-   Compute the Jacobian (DLRDC).
@@ -694,6 +706,7 @@ print *,'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxblock_
 
         end do ! enddo loop over all blocks
 
+close(unit=10)
 
     end subroutine chem_rodas3_dyndt
 
