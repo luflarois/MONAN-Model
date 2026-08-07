@@ -233,13 +233,14 @@ write(10,*) 'LFR-DBG: maxnonzeros, nob, maxblock_size: ',maxnonzeros, nob, maxbl
         do i = 1, nob !- loop over all blocks i) = nVertLevels
             !- copying structure from input to internal
 write(10,*) 'LFR-DBG: Filling variables for chemistry integration', i, block_end(i), nob, inob
+write(10,*) 'LFR-DBG: sizes(temp): ',size(temp,1),size(temp,2),size(spack(inob)%temp)
             do ijk = 1, block_end(i) !index_g%block_end(i) - MONAN: the block_end is the number of levels
-                spack(inob)%press(ijk) = press(ijk,i)
-                spack(inob)%temp(ijk) = temp(ijk,i)
-                spack(inob)%vapp(ijk) = vapp(ijk,i)
-                spack(inob)%volmol(ijk) = (6.02d23 * 1d-15 * pmar) * (press(ijk,i)) / (8.314d0 * temp(ijk,i))
+                spack(inob)%press(ijk) = press(i,ijk)
+                spack(inob)%temp(ijk) = temp(i,ijk)
+                spack(inob)%vapp(ijk) = vapp(i,ijk)
+                spack(inob)%volmol(ijk) = (6.02d23 * 1d-15 * pmar) * (press(i,ijk)) / (8.314d0 * temp(i,ijk))
                 spack(inob)%volmol_i(ijk) = 1.0d0 / spack(inob)%volmol(ijk)
-write(10,*) 'LFR-DBG: vars filled for ',ijk,'temp= ',spack(inob)%temp(ijk)
+write(10,*) 'LFR-DBG: vars filled for ',ijk,'/',block_end(i),' :temp= ',spack(inob)%temp(ijk)
                 !- no transported species section
                 do ispc = 1, nspecies_chem_no_transported
                     !- map the species to NO transported ones
@@ -262,7 +263,7 @@ write(10,*) 'LFR-DBG: checking split_method ',n_dyn_chem
                         n = transp_chem_index(ispc)
 
                         spack(inob)%sc_p(ijk, n) = (chem_g(n)%sc_p(ijk, i) - &  ! updated mixing ratio
-                        chem_g(n)%sc_t_dyn(ijk,i) * n_dyn_chem * dtlt)&  ! accumulated tendency
+                        chem_g(n)%sc_t_dyn(i,ijk) * n_dyn_chem * dtlt)&  ! accumulated tendency
                         * spack(inob)%volmol(ijk) / weight(n)
 
                     end do
@@ -646,7 +647,7 @@ write(10,*) 'LFR-DBG: starting time-splitting integration',i,time_c,time_f,dt_ch
                         n = transp_chem_index(ispc)
 
                         !- include the chemical tendency at total tendency (convert to unit: ppbm/s)
-                        chem_g(n)%sc_p(ijk, i) = chem_g(n)%sc_t_dyn(ijk,i) * n_dyn_chem * dtlt + &
+                        chem_g(n)%sc_p(ijk, i) = chem_g(n)%sc_t_dyn(i,ijk) * n_dyn_chem * dtlt + &
                         spack(inob)%sc_p(ijk, n) * weight(n) * spack(inob)%volmol_i(ijk)
                         chem_g(n)%sc_p(ijk, i) = max(0., chem_g(n)%sc_p(ijk, i))
 
@@ -665,7 +666,7 @@ write(10,*) 'LFR-DBG: starting time-splitting integration',i,time_c,time_f,dt_ch
 
                         !- include the chemical tendency at total tendency (convert to unit: ppbm/s)
                         !           chem_g(n)%sc_t(kij_) =          +  &! use this for update only chemistry (No dyn/emissions
-                        chem_g(n)%sc_t(ijk,i) = chem_g(n)%sc_t(ijk,i) + &! previous tendency
+                        chem_g(n)%sc_t(i,ijk) = chem_g(n)%sc_t(i,ijk) + &! previous tendency
                         (spack(inob)%sc_p(ijk, n) * weight(n) * spack(inob)%volmol_i(ijk) - &! new mixing ratio
                         chem_g(n)%sc_p(ijk, i)) &! old mixing ratio
                          * dble_dtlt_i                     ! inverse of timestep
