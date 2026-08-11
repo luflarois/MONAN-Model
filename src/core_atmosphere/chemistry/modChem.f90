@@ -200,36 +200,8 @@ print *,'LFR-DBG: 15'
                 ,mynum = mynum             &
                 ,jphoto = jphoto           &
                 )
-
-write(ctime,fmt='(I2.2)') iTimestep     
-!open(unit=22, file='valJ_'//ctime//'.dat', status='replace', action='write')
-!do i=1,nCells
-!    write(22,fmt='(F10.5,1X,F10.5,1X,E10.5)') xlat_p(i),xlon_p(i),jphoto(1,i,1)
-!end do
-!close(unit=22)
-
-                ! call Rodas3_dynt(                &
-                !  press         = pres_hyd_p      &
-                ! ,temp          = t_p             &
-                ! ,rho           = rho_p           &
-                ! ,pp            = pres_p          &
-                ! ,coszr         = coszr_p         &
-                ! ,glat          = xlat_p          &
-                ! ,glon          = xlon_p          &
-                ! ,qv            = qv_p            &
-                ! ,qc            = qc_p            &
-                ! ,chem_conc     = chem_conc_p     &
-                ! ,chem_tend     = chem_tend_p     &
-                ! ,chem_tend_dyn = chem_tend_dyn_p &
-                ! ,jphoto        = jphoto          &
-                ! ,dtlt          = config_dt       &
-                ! ,itimestep     = iTimestep       &
-                ! ,nCells        = nCells          &
-                ! ,nVertLevels   = nVertLevels     &
-                ! ,timestamp     = timeStamp       &
-                ! ,mynum         = mynum           &
-                ! )
-
+print *,'LFR-DBG: 16 - Chamando chem_rodas3_dyndt...',203
+write(ctime,fmt='(I2.2)') iTimestep  
 
                 call chem_rodas3_dyndt( &
                     domain     = domain       &
@@ -251,11 +223,11 @@ write(ctime,fmt='(I2.2)') iTimestep
                   , chemistry = chemistry &
                   , maxblock_size = maxblock_size &
                   )
-
+print *,'LFR-DBG: 17'
                 call chemistry_to_MPAS(block%configs,diag,nSpecies,nVertLevels,nCells)
 
                 call deallocate_forall_chemistry(block%configs)
-    
+print *,'LFR-DBG: 18'    
             end if !End of valid
             
             block => block % next

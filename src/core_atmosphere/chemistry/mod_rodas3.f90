@@ -162,7 +162,7 @@ contains
         real :: start, finish
         real :: elapsed_time_solver, elapsed_time, elapsed_time_alloc, elapsed_time_dealloc, elapsed_time_copy
 
-        integer(kind = 8) :: matrix_id
+        ineger(kind = 8) :: matrix_id
         integer :: error
         integer(kind = 8), allocatable, dimension(:) :: element
 
@@ -182,12 +182,12 @@ contains
         double precision, allocatable, target :: rhs_tmp(:), sol_tmp(:)
 
         type(spack_type_2d), allocatable, dimension(:, :) :: spack_2d
-        
-
+  
+print *,'LFR-DBG: Starting chemistry integration with RODAS3 method',2
         proc = domain % dminfo % my_proc_id
-        write(flogname,fmt='(A,I8.8,A)') '/p/projetos/monan_chem/luiz.rodrigues/scripts_CD-CT/dataout/2026070100/Model/logs/rodas3_dyndt_proc_',proc,'.log'
-        open(10, file=flogname, status='replace', action='write', form='formatted')
-
+        write(flogname,fmt='(A,I8.8,A)') '/home/lufla/workArea/scripts_CD-CT/dataout/2026070100/Model/logs/rodas3_dyndt_proc_',proc,'.log'
+        open(10, file=trim(flogname), status='replace', action='write', form='formatted')
+        print *,'LFR-DBG: Starting chemistry integration with RODAS3 method', trim(flogname)," - ",proc
 
         call get_number_nonzeros(nr_photo, nr, nspecies, maxnonzeros)
 

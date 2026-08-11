@@ -47,11 +47,6 @@ post_build:
 	cp default_inputs/* $(ROOT_DIR)/default_inputs/.
 	( cd $(ROOT_DIR)/default_inputs; for FILE in `ls -1`; do if [ ! -e ../$$FILE ]; then cp $$FILE ../.; fi; done )
 
-#Chemistry build
-chem: 
-	( cd chemistry; $(MAKE) all) 
-	( echo "****** compiling chemistry_monan ******" )
-#
 
 physcore: mpas_atm_dimensions.o
 	( cd physics; $(MAKE) all )
@@ -72,6 +67,12 @@ utilities: $(PHYSCORE)
 atmcore: $(PHYSCORE) dycore diagcore $(OBJS)
 	ar -ru libdycore.a $(OBJS) dynamics/*.o $(PHYS_OBJS) diagnostics/*.o $(UTILS_C_OBJS) $(CHEM_OBJS) $(TUV_OBJS) $(RELACS_TUV_OBJS)
 
+#Chemistry build
+chem: 
+	( cd chemistry; $(MAKE) all) 
+	( echo "****** compiling chemistry_monan ******" )
+#
+
 mpas_atm_core_interface.o: mpas_atm_core.o
 
 mpas_atm_core.o: dycore diagcore mpas_atm_threading.o mpas_atm_halos.o
@@ -91,6 +92,9 @@ clean:
 	@# Certain systems with intel compilers generate *.i files
 	@# This removes them during the clean process
 	$(RM) *.i
+	@# Certain systems with gnu compilers generate *.s files
+	@# This removes them during the clean process	
+	$(RM) *.s
 	$(RM) -r default_inputs
 
 .F.o:
