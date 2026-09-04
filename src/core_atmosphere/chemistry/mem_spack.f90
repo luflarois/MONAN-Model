@@ -1,64 +1,57 @@
 module mem_spack
 
+    ! use spack_utils,only: nob_real=>nob,maxblock_size
+
+    !lfr-monan use spack_utils,only: &
+    !lfr-monan      maxblock_size      ! in
+
     use chem_list, only: &
     nspecies, & ! parameter
     nr, & ! parameter
     nr_photo, & ! parameter
     photojmethod       ! parameter
 
+    use, intrinsic :: iso_c_binding, only: c_double
+
     implicit none
 
     type, public :: spack_type
 
         !3d real
-        double precision, allocatable, dimension(:, :, :) :: dldrdc
+        real(kind=c_double), allocatable, dimension(:, :, :) :: dldrdc
 
         !2d real
-        double precision, allocatable, dimension(:, :) :: sc_p_new
-        double precision, allocatable, dimension(:, :) :: sc_p_4
-        double precision, allocatable, dimension(:, :) :: dlr
-        double precision, allocatable, dimension(:, :) :: dlr3
+        real(kind=c_double), allocatable, dimension(:, :) :: sc_p_new
+        real(kind=c_double), allocatable, dimension(:, :) :: sc_p_4
+        real(kind=c_double), allocatable, dimension(:, :) :: dlr
+        real(kind=c_double), allocatable, dimension(:, :) :: dlr3
 
 
-        double precision, allocatable, dimension(:, :) :: jphoto
-        double precision, allocatable, dimension(:, :) :: rk
-        double precision, allocatable, dimension(:, :) :: w
-        double precision, allocatable, dimension(:, :) :: sc_p
+        real(kind=c_double), allocatable, dimension(:, :) :: jphoto
+        real(kind=c_double), allocatable, dimension(:, :) :: rk
+        real(kind=c_double), allocatable, dimension(:, :) :: w
+        real(kind=c_double), allocatable, dimension(:, :) :: sc_p
 
         !1d real
-        double precision, allocatable, dimension(:) :: temp
-        double precision, allocatable, dimension(:) :: press
-        double precision, allocatable, dimension(:) :: cosz
-        double precision, allocatable, dimension(:) :: att
-        double precision, allocatable, dimension(:) :: vapp
-        double precision, allocatable, dimension(:) :: volmol
-        double precision, allocatable, dimension(:) :: volmol_i
-        double precision, allocatable, dimension(:) :: xlw
-        double precision, allocatable, dimension(:) :: err
+        real(kind=c_double), allocatable, dimension(:) :: temp
+        real(kind=c_double), allocatable, dimension(:) :: press
+        real(kind=c_double), allocatable, dimension(:) :: cosz
+        real(kind=c_double), allocatable, dimension(:) :: att
+        real(kind=c_double), allocatable, dimension(:) :: vapp
+        real(kind=c_double), allocatable, dimension(:) :: volmol
+        real(kind=c_double), allocatable, dimension(:) :: volmol_i
+        real(kind=c_double), allocatable, dimension(:) :: xlw
+        real(kind=c_double), allocatable, dimension(:) :: err
 
     end type spack_type
 
-    type, public :: spack_type_2d
-        double precision, allocatable, dimension(:, :) :: dlmat
-        double precision, allocatable, dimension(:) :: dlb1
-        double precision, allocatable, dimension(:) :: dlb2
-        double precision, allocatable, dimension(:) :: dlb3
-        double precision, allocatable, dimension(:) :: dlb4
-        double precision, allocatable, dimension(:) :: dlk1
-        double precision, allocatable, dimension(:) :: dlk2
-        double precision, allocatable, dimension(:) :: dlk3
-        double precision, allocatable, dimension(:) :: dlk4
-
-    end type spack_type_2d
-
     private
 
-    double precision, parameter :: rtols = 1.d-3 ! 1e-2 means two digits
-    double precision, parameter :: atols = 1.d+7 ! jacobson (1998, smvgear) range 1.e3-1.e7! 1.d0
+    real(kind=c_double), parameter :: rtols = 1.e-3_c_double ! 1e-2 means two digits
+    real(kind=c_double), parameter :: atols = 1.e+7_c_double ! jacobson (1998, smvgear) range 1.e3-1.e7! 1.d0
 
-    double precision, public, dimension(nspecies) :: atol, rtol
-    type(spack_type), public, allocatable, dimension(:) :: spack
-    type(spack_type_2d), public, allocatable, dimension(:, :) :: spack_2d
+    real(kind=c_double), public, dimension(nspecies) :: atol, rtol
+    type(spack_type), public :: spack
     logical, public :: spack_alloc = .false.
 
     public :: alloc_spack
@@ -70,8 +63,7 @@ module mem_spack
     subroutine alloc_spack(maxblock_size)
 
         implicit none
-        !integer, intent(in) :: nob_mem
-        integer i, ii, nob, n
+        integer n
         integer, intent(in) :: maxblock_size
 
         if (spack_alloc) then
@@ -80,67 +72,62 @@ module mem_spack
             stop
         end if
 
-        !  if(nob_mem==0) nob=nob_real
-        !  if(nob_mem==1) nob=1
-
-
         do n = 1, nspecies
             atol(n) = atols
             rtol(n) = rtols
         end do
 
         !- allocating spaces to copy structure
-
-        nob = 1 ! to save memory, the scratch will be re-used
-        allocate(spack(nob))
-
         !- maxblock_size is the maximum block size including all grids
         !- all grids/blocks will share the same array/memory area
-    
+        !- spack is a single scratch structure (not an array): there is only
+        !- one block being processed at a time, so no outer dimension is needed
 
-        do i = 1, nob
+        !- 3d variables
+        allocate(spack%dldrdc (1:maxblock_size, nspecies, nspecies)) ;
+        spack%dldrdc = 0.0_c_double
 
-            !- 3d variables
-            allocate(spack(i)%dldrdc (1:maxblock_size, nspecies, nspecies)) ;
-            spack(i)%dldrdc = 0.0d0
+        !- 2d variables
+        allocate(spack%jphoto (1:maxblock_size, nr_photo)) ;
+        spack%jphoto = 0.0_c_double
 
-            !- 2d variables
-            allocate(spack(i)%jphoto (1:maxblock_size, nr_photo)) ;
-            spack(i)%jphoto = 0.0d0
+        allocate(spack%rk (1:maxblock_size, nr)) ;
+        spack%rk = 0.0_c_double
+        allocate(spack%w (1:maxblock_size, nr)) ;
+        spack%w = 0.0_c_double
+        allocate(spack%sc_p (1:maxblock_size, nspecies)) ;
+        spack%sc_p = 0.0_c_double
+        allocate(spack%sc_p_new(1:maxblock_size, nspecies)) ;
+        spack%sc_p_new = 0.0_c_double
 
-            allocate(spack(i)%rk (1:maxblock_size, nr)) ;
-            spack(i)%rk = 0.0d0
-            allocate(spack(i)%w (1:maxblock_size, nr)) ;
-            spack(i)%w = 0.0d0
-            allocate(spack(i)%sc_p (1:maxblock_size, nspecies)) ;
-            spack(i)%sc_p = 0.0d0
-            allocate(spack(i)%sc_p_new(1:maxblock_size, nspecies)) ;
-            spack(i)%sc_p_new = 0.0d0
+        allocate(spack%dlr (1:maxblock_size, nspecies)) ;
+        spack%dlr = 0.0_c_double
 
-            allocate(spack(i)%dlr (1:maxblock_size, nspecies)) ;
-            spack(i)%dlr = 0.0d0
+        !- for rodas 3 only for version 1
+        !if( chemistry == 4) then
+        !  allocate(spack%dlr3  (1:maxblock_size,nspecies))    ;spack%dlr3    = 0.0d0
+        !  allocate(spack%sc_p_4 (1:maxblock_size,nspecies))   ;spack%sc_p_4  = 0.0d0
+        !endif
 
-            !- 1d variables
-            allocate(spack(i)%temp (1:maxblock_size)) ;
-            spack(i)%temp = 0.0d0
-            allocate(spack(i)%press (1:maxblock_size)) ;
-            spack(i)%press = 0.0d0
-            allocate(spack(i)%cosz (1:maxblock_size)) ;
-            spack(i)%cosz = 0.0d0
-            allocate(spack(i)%att (1:maxblock_size)) ;
-            spack(i)%att = 0.0d0
-            allocate(spack(i)%vapp (1:maxblock_size)) ;
-            spack(i)%vapp = 0.0d0
-            allocate(spack(i)%volmol (1:maxblock_size)) ;
-            spack(i)%volmol = 0.0d0
-            allocate(spack(i)%volmol_i (1:maxblock_size)) ;
-            spack(i)%volmol_i = 0.0d0
-            allocate(spack(i)%xlw (1:maxblock_size)) ;
-            spack(i)%xlw = 0.0d0
-            allocate(spack(i)%err (1:maxblock_size)) ;
-            spack(i)%err = 0.0d0
-
-        enddo
+        !- 1d variables
+        allocate(spack%temp (1:maxblock_size)) ;
+        spack%temp = 0.0_c_double
+        allocate(spack%press (1:maxblock_size)) ;
+        spack%press = 0.0_c_double
+        allocate(spack%cosz (1:maxblock_size)) ;
+        spack%cosz = 0.0_c_double
+        allocate(spack%att (1:maxblock_size)) ;
+        spack%att = 0.0_c_double
+        allocate(spack%vapp (1:maxblock_size)) ;
+        spack%vapp = 0.0_c_double
+        allocate(spack%volmol (1:maxblock_size)) ;
+        spack%volmol = 0.0_c_double
+        allocate(spack%volmol_i (1:maxblock_size)) ;
+        spack%volmol_i = 0.0_c_double
+        allocate(spack%xlw (1:maxblock_size)) ;
+        spack%xlw = 0.0_c_double
+        allocate(spack%err (1:maxblock_size)) ;
+        spack%err = 0.0_c_double
 
         spack_alloc = .true.
 

@@ -37,17 +37,17 @@ contains
         integer, intent(in) :: dim2
         integer, intent(in) :: dim3
         integer :: ispc
-print *,'LFR-DBG: alloc 1'
+!print *,'LFR-DBG: alloc 1'
         do ispc = 1,nSpecies
             if(allocated(chem_g(iSpc)%sc_p)) then
                 print *,'Error: specie ',iSpc," "//trim(spc_name(ispc)),', used to sc_p, already allocated!'
                 print *,'Please, check it!'
                 stop 'ERROR!'
             end if
-print *,'LFR-DBG: alloc 1.1',ispc
+!print *,'LFR-DBG: alloc 1.1',ispc
             allocate(chem_g(iSpc)%sc_p(dim1,dim2))
             chem_g(iSpc)%sc_p = 0.0
-print *,'LFR-DBG: alloc 1.2',ispc
+!print *,'LFR-DBG: alloc 1.2',ispc
             !-srf: only tendencies arrays for transported species are allocated (save memory)
             if (spc_alloc(transport,ispc) == on) then  
                 if(allocated(chem_g(iSpc)%sc_t)) then
@@ -58,10 +58,11 @@ print *,'LFR-DBG: alloc 1.2',ispc
                 allocate(chem_g(iSpc)%sc_t(dim1,dim2))
             else
             !- for non-transported species, arrays are allocated with one-dimension
-                allocate(chem_g(iSpc)%sc_t(1,1))
+                !allocate(chem_g(iSpc)%sc_t(1,1))
+                allocate(chem_g(iSpc)%sc_t(dim1,dim2))
             end if
             chem_g(iSpc)%sc_t = 0.0
-print *,'LFR-DBG: alloc 1.3',ispc
+!print *,'LFR-DBG: alloc 1.3',ispc
             !- allocate memory for the tendency tracer mixing ratio if parallel spliting 
             !- operator will be used
             if (spc_alloc(transport,ispc) == on .and. trim(adjustl(split_method)) == 'PARALLEL') then  
@@ -72,11 +73,12 @@ print *,'LFR-DBG: alloc 1.3',ispc
                 end if
                 allocate(chem_g(iSpc)%sc_t_dyn(dim1,dim2))  
             else
-                allocate(chem_g(iSpc)%sc_t_dyn(1,1))  
+                !allocate(chem_g(iSpc)%sc_t_dyn(1,1))  
+                allocate(chem_g(iSpc)%sc_t_dyn(dim1,dim2))
             end if
             chem_g(iSpc)%sc_t_dyn = 0.0                                
         end do
-print *,'LFR-DBG: alloc 10'
+!print *,'LFR-DBG: alloc 10'
         if(allocated(last_accepted_dt)) then
             print *,'Error: last_accepted_dt, already allocated!'
             print *,'Please, check it!'
@@ -84,17 +86,17 @@ print *,'LFR-DBG: alloc 10'
         end if
         allocate(last_accepted_dt(dim3), block_end(dim3))
         block_end = dim2
-print *,'LFR-DBG: alloc 11'
+!print *,'LFR-DBG: alloc 11'
         nspecies_chem_transported = 0
         transp_chem_index   (:)   = 0
 
         nspecies_chem_no_transported = 0
         no_transp_chem_index(:)      = 0
-print *,'LFR-DBG: alloc 12'
+!print *,'LFR-DBG: alloc 12'
         do ispc=1,nspecies
            !- Fill pointers to scalar arrays into scalar tables 
            !-srf - only for the "transported" species
-print *,'LFR-DBG: alloc 12.1',ispc
+!print *,'LFR-DBG: alloc 12.1',ispc
            if (spc_alloc(transport,ispc) == on .and. allocated(chem_g(ispc)%sc_t)) then
               !- number of chem transported species
               nspecies_chem_transported = nspecies_chem_transported + 1
@@ -105,9 +107,9 @@ print *,'LFR-DBG: alloc 12.1',ispc
               nspecies_chem_no_transported = nspecies_chem_no_transported + 1
               no_transp_chem_index(nspecies_chem_no_transported) = ispc
            endif
-print *,'LFR-DBG: alloc 12.2',ispc
+!print *,'LFR-DBG: alloc 12.2',ispc
         enddo
-print *,'LFR-DBG: alloc 13'
+!print *,'LFR-DBG: alloc 13'
 
     end subroutine alloc_chem
 

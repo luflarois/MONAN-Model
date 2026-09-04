@@ -228,11 +228,11 @@ print *,'LFR-DBG: Block 7'
    !print *, 'LFR-DBG: MPAS_to_chemistry: before get array 4 calls'; call flush(6)
     call mpas_pool_get_array(state,'scalars',scalars,time_lev)
     qv => scalars(index_qv,:,:)
-    qc => scalars(index_qc,:,:)
-    qr => scalars(index_qr,:,:)
-    qi => scalars(index_qi,:,:)
-    qs => scalars(index_qs,:,:)
-    qg => scalars(index_qg,:,:)
+    !qc => scalars(index_qc,:,:)
+    !qr => scalars(index_qr,:,:)
+    !qi => scalars(index_qi,:,:)
+    !qs => scalars(index_qs,:,:)
+    !qg => scalars(index_qg,:,:)
 
     call mpas_pool_get_array(diag_physics,'plrad',plrad)
     call mpas_pool_get_array(diag_physics,'o3clim'    ,o3clim    )
@@ -242,11 +242,11 @@ print *,'LFR-DBG: Block 7'
     do i = 1,nCells
         do k = 1, nVertLevels
             qv_p(k,i) = max(0.,qv(k,i))
-            qc_p(k,i) = max(0.,qc(k,i))
-            qr_p(k,i) = max(0.,qr(k,i))
-            qi_p(k,i) = max(0.,qi(k,i))
-            qs_p(k,i) = max(0.,qs(k,i))
-            qg_p(k,i) = max(0.,qg(k,i))
+!            qc_p(k,i) = max(0.,qc(k,i))
+!            qr_p(k,i) = max(0.,qr(k,i))
+!            qi_p(k,i) = max(0.,qi(k,i))
+!            qs_p(k,i) = max(0.,qs(k,i))
+!            qg_p(k,i) = max(0.,qg(k,i))
 
             u_p(k,i) = u(k,i)
             v_p(k,i) = v(k,i)

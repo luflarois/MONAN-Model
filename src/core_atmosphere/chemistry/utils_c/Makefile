@@ -22,4 +22,4 @@ solv: $(OBJS)
 	$(CC_SERIAL) $(CFLAGS) -c $< $(CINCLUDES) -I./
 
 clean:
-	$(RM) *.o *.mod *.i
+	$(RM) *.o *.mod *.i *.a

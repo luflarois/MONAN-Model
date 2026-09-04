@@ -83,6 +83,7 @@ clean:
 	( cd physics; $(MAKE) clean )
 	( cd dynamics; $(MAKE) clean )
 	( cd diagnostics; $(MAKE) clean )
+	( cd chemistry; $(MAKE) clean )
 	( cd utils; $(MAKE) clean )
 	( cd ../..; rm -f *TBL )
 	( cd ../..; rm -f *DATA* )

@@ -28,6 +28,8 @@ module modChem
       ,transport &
       ,on
   use mem_spack, only: spack, spack_alloc, alloc_spack
+  use modTest, onlY: readMergedChemFile, mapChemToGridNearest
+  use mod_chem_output, only: write_chem_netcdf
 
   !use modFilesChem, only: read_Cams_Chem, mass_frac_to_molec_cm3, read_static_test, readBramsOut
 
@@ -102,50 +104,50 @@ contains
 
         block => domain % blocklist
         myNum = domain%dminfo%my_proc_id
-print *,'LFR-DBG: Starting chemistry_driver - iTimestep : ', iTimestep
+!print *,'LFR-DBG: Starting chemistry_driver - iTimestep : ', iTimestep
         call mpas_pool_get_subpool(block%structs, 'mesh', mesh)
-print *,'LFR-DBG: 01'
+!print *,'LFR-DBG: 01'
         call mpas_pool_get_subpool(block%structs,'diag_physics',diag_physics)
-print *,'LFR-DBG: 02'
+!print *,'LFR-DBG: 02'
         call mpas_pool_get_subpool(block%structs, 'state', state)
-print *,'LFR-DBG: 03'
+!print *,'LFR-DBG: 03'
         call mpas_pool_get_subpool(block%structs, 'diag', diag)
-print *,'LFR-DBG: 04'
+!print *,'LFR-DBG: 04'
         call mpas_pool_get_dimension(mesh,'nVertLevels',nVertLevels)
-print *,'LFR-DBG: 05'
+!print *,'LFR-DBG: 05'
 !        call mpas_pool_get_dimension(mesh,'nSpecies', nSpecies)
-print *,'LFR-DBG: 06'
+!print *,'LFR-DBG: 06'
         call mpas_pool_get_dimension(mesh, 'nCells', nCells)
-print *,'LFR-DBG: 07'
+!print *,'LFR-DBG: 07'
 !print *,'LFR-DBG: Retrieved dimensions - nVertLevels = ', nVertLevels, ' nSpecies = ', nSpecies, ' nCells = ', nCells
         call mpas_pool_get_config(block % configs, 'config_dt', config_dt)
-print *,'LFR-DBG: 08'
+!print *,'LFR-DBG: 08'
 
         call mpas_get_time(curr_time=currTime, dateTimeString=timeStamp, ierr=ierr)
-print *,'LFR-DBG: 09'
+!print *,'LFR-DBG: 09'
 !print *,'LFR-DBG: Retrieved config_dt = ', config_dt       
         chem_timestep = config_dt/4.0 !LFR-DBG TBD: Chemistry timestep in seconds (to be set in config file later)
-print *,'LFR-DBG: Set chem_timestep = ', chem_timestep
+!print *,'LFR-DBG: Set chem_timestep = ', chem_timestep
 
          !- set the number of dynamics cycles inside each chemistry cycle:
          !- observe that 'config_dt' (timestep of grid) is used.
         !- set the number of dynamics cycles inside each chemistry cycle:
         !- observe that 'config_dt' (timestep of grid) is used.
         n_dyn_chem = max(1,nint(chem_timestep/config_dt))
-print *,'LFR-DBG: Set n_dyn_chem = ', n_dyn_chem
+!print *,'LFR-DBG: Set n_dyn_chem = ', n_dyn_chem
 
          !- chemistry is called every 'n_dyn_chem' steps:
          !- observe that 'iTimestep' is the current step of the grid.
         do while(associated(block))
-print *,'LFR-DBG: 10'
+!print *,'LFR-DBG: 10'
             call mpas_pool_get_dimension(block % dimensions, 'nThreads', nThreads)
-print *,'LFR-DBG: 11'      
+!print *,'LFR-DBG: 11'      
             allocate(jphoto(nVertlevels, nCells, nr_photo))
-print *,'LFR-DBG: 12'
+!print *,'LFR-DBG: 12'
 
             if(mod(iTimestep, 4) == 0 .or. iTimestep == 1) then
                 !print *, 'Hello from chemistry_driver', iTimestep
-print *,'LFR-DBG: 12.1'
+!print *,'LFR-DBG: 12.1'
 
                 if(iTimestep == 1) then
                     !print *, 'Allocating chemistry arrays...'
@@ -153,31 +155,25 @@ print *,'LFR-DBG: 12.1'
                     call alloc_chem(nVertLevels,nCells,nVertLevels)
                     call alloc_spack(maxblock_size = maxblock_size)
                 end if
-print *,'LFR-DBG: 12.2'
+!print *,'LFR-DBG: 12.2'
                 !print *, 'Allocating chemistry arrays...'
                 call allocate_forall_chemistry(nCells = nCells, nVertLevels = nVertLevels, nChemSpecies = nSpecies)
-print *,'LFR-DBG: 12.3'
+!print *,'LFR-DBG: 12.3'
                 !chemistry prep step:
                 time_lev = 1
-print *,'LFR-DBG: 13'
+!print *,'LFR-DBG: 13'
 !$OMP PARALLEL DO
                 do thread=1,nThreads
                     !print *,'Fazendo thread ', thread !, cellSolveThreadStart(thread), cellSolveThreadEnd(thread)
                     call MPAS_to_chemistry(block%configs,mesh,state,time_lev,diag,diag_physics, nCells, nVertLevels, nSpecies)
                 end do
 !$OMP END PARALLEL DO     
-print *,'LFR-DBG: 14'
-                !call test_rodas3_dynt() !Only to test if works
+!print *,'LFR-DBG: 14'
 
-                !if(iTimestep == 1) then
-                !    chem_conc_p = 0.0
-                    !call read_static_test(filename = 'data_chem_tst.csv', chem_out = chem_conc_p, nVertLevels = nVertLevels, nCells = nCells, xlat_p = xlat_p, xlon_p = xlon_p, nspecies = nSpecies)
-                    !call read_Cams_Chem(filename = 'data_plev.nc',zmid = zmid_p,xlat = xlat_p, xlon = xlon_p &
-                    !                   , chem_out = chem_conc_p,nVertLevels = nVertLevels, nCells = nCells, nSpecies = nSpecies)
-                !    call readBramsOut(chem_out = chem_conc_p,xlat = xlat_p,xlon = xlon_p,nVertLevels = nVertLevels,nCells = nCells,nspecies_in = nSpecies)
 
-                !end if
-print *,'LFR-DBG: 15'
+
+
+!print *,'LFR-DBG: 15'
 !                print *, 'Calling chemistry driver...'
                 call Tuv_driver(           &
                  domain     = domain       &
@@ -200,12 +196,20 @@ print *,'LFR-DBG: 15'
                 ,mynum = mynum             &
                 ,jphoto = jphoto           &
                 )
-print *,'LFR-DBG: 16 - Chamando chem_rodas3_dyndt...',203
-write(ctime,fmt='(I2.2)') iTimestep  
 
+call writeJphoto(iTimestep,nCells,nVertLevels,mynum &
+                 ,xlat_p,xlon_p,coszr_p,jphoto &
+                 ,pres_hyd_p,t_p,z_p,zmid_p,dz_p &
+                 ,rho_p,pres_p,qv_p,sfc_albedo_p,lwupb_p)
+
+!print *,'LFR-DBG: 16 - Chamando chem_rodas3_dyndt...',203
+write(ctime,fmt='(I2.2)') iTimestep  
+!print *,'LFR-DBG: chemg sizes',size(chem_g),size(chem_g(1)%sc_t_dyn,1),size(chem_g(1)%sc_t_dyn,2)
+                 if (iTimestep == 1) call readMergedChemFile("./chem_merged_t60.bin", nSpecies)
+                 if (iTimestep == 1) call mapChemToGridNearest(xlat_p, xlon_p, nCells, nVertLevels &
+                                                               ,t_p, pres_hyd_p, qv_p, zmid_p, nSpecies)
                 call chem_rodas3_dyndt( &
-                    domain     = domain       &
-                  , nob = nVertLevels &
+                    nob = nVertLevels &
                   , block_end = block_end &
                   , dtlt = config_dt &
                   , press = pres_hyd_p &
@@ -223,11 +227,22 @@ write(ctime,fmt='(I2.2)') iTimestep
                   , chemistry = chemistry &
                   , maxblock_size = maxblock_size &
                   )
-print *,'LFR-DBG: 17'
-                call chemistry_to_MPAS(block%configs,diag,nSpecies,nVertLevels,nCells)
+
+                call write_chem_netcdf( &
+                    chem_g = chem_g      &
+                  , xlat_p = xlat_p      &
+                  , xlon_p = xlon_p      &
+                  , nVertLevels = nVertLevels&
+                  , nCells = nCells      &
+                  , iTimestep = iTimestep   &
+                  , dt = 300.          &
+                  , start_date = "20220714000000"  &
+                    )
+
+!                call chemistry_to_MPAS(block%configs,diag,nSpecies,nVertLevels,nCells)
 
                 call deallocate_forall_chemistry(block%configs)
-print *,'LFR-DBG: 18'    
+!print *,'LFR-DBG: 18'    
             end if !End of valid
             
             block => block % next
@@ -263,7 +278,7 @@ print *,'LFR-DBG: 18'
                 n=transp_chem_index(ispc)
 
                 !- calculate the mean dynamic tendency for the entire chemistry timestep
- 	            do i= 1,nCells
+                do i= 1,nCells
                     do k=1,nVertLevels
 !TBD                        chem1_g(n)%sc_t_dyn(ixyz) = chem1_g(n)%sc_t_dyn(ixyz) + &
 !TBD                                              n_dyn_chem_i * chem1_g(n)%sc_t(ixyz)
@@ -281,4 +296,89 @@ print *,'LFR-DBG: 18'
     end  subroutine chem_accum
 
 
+    !==============================================================================
+    subroutine writeJphoto(iTimestep,nCells,nVertLevels,mynum &
+                 ,glat,glon,coszr,jphoto &
+                 ,press,temp,zt_,zm_,dzp &
+                 ,rho,pp,qv,sfc_albedo,rlongup)
+
+        !> @brief Brief description
+        !>
+        !> @project MONAN-Model
+        !>
+        !> @author luflarois <luflarois@gmail.com>
+        !> @date 2026-09-01
+        !> @version 0.1.0
+        !> @details 
+        !> Brief description
+        !> 
+        !> @license This code is under GPLv3 License, see it in <https://www.gnu.org/licenses/gpl-3.0.en.html>
+        !==============================================================================
+        implicit none
+    
+        !Parameters:
+        character(len=*), parameter :: source_file    = 'modChem.f90'
+        !> name of source file - used for debug
+        character(len=*), parameter :: procedure_name = 'writeJphoto'
+        !> name of this procedure - used for debug
+    
+        !Inputs:
+        integer, intent(in) :: iTimestep,nCells,nVertLevels,mynum
+        real,dimension(nVertLevels,nCells),intent(in) :: press
+        !! Pressure field [Pa]
+        real,dimension(nVertLevels,nCells),intent(in) :: temp
+        !! Temperature field [K]
+        real,dimension(nVertLevels,nCells),intent(in) :: zt_
+        !! Geometric height of layer top [m]
+        real,dimension(nVertLevels,nCells),intent(in) :: zm_
+        !! Geometric height of layer midpoint [m]
+        real,dimension(nVertLevels,nCells),intent(in) :: dzp
+        !! Thickness of each layer [m]
+        real,dimension(nVertLevels,nCells),intent(in) :: rho
+        !! Air density at layer midpoint [kg/m3]
+        real,dimension(nVertLevels,nCells),intent(in) :: pp
+        !! Pressure at layer midpoint [Pa]  - SOundings
+        real,dimension(nCells),intent(in)         :: coszr
+        !! Cosine of solar zenith angle at each cell [unitless]
+        real,dimension(nCells),intent(in)         :: rlongup
+        !! !all-sky upwelling longwave flux at bottom-of-atmosphere
+        real,dimension(nCells),intent(in)         :: glat
+        !! latitude, south is negative [degrees]
+        real,dimension(nCells),intent(in)         :: glon
+        !! longitude, west is negative [degrees]
+        real,dimension(nVertLevels,nCells),intent(in) :: qv
+        !! water vapor mixing ratio   [kg/kg]
+        real,dimension(nCells),intent(in) :: sfc_albedo
+        !! Surface albedo
+        !!
+        real(kind=RKIND), intent(in) :: jphoto(nVertlevels, nCells, nr_photo)
+ 
+    
+        integer :: iunit, nl, nc
+        character(len=17) :: filename
+
+        !Code area
+        if(iTimestep == 1 .or. iTimestep == 144 ) then
+            write(filename,fmt='("Jphoto_",I2.2,"_",I3.3,".csv")') mynum,iTimestep
+            open(newunit=iunit,file=filename,status='replace',action='write')
+            write(iunit,*) "nc,glat,glon,zt,coszr," &
+                     //"press, temp," &
+                     //"dzp, rho, pp," & 
+                     //"rlongup, qv, sfc_albedo," &
+                     //"jphoto(min),jphoto(max)"
+            do nc = 1,nCells
+                do nl = 1,nVertLevels
+                    write(iunit,fmt='(I4.4,",",4(F10.4,","),8(E15.6,","),1(E18.6,","),E18.6)') &
+                     nc,glat(nc),glon(nc),zt_(nl,nc),coszr(nc), &
+                     press(nl,nc), temp(nl,nc), dzp(nl,nc), rho(nl,nc), pp(nl,nc), & 
+                     rlongup(nc), qv(nl,nc), sfc_albedo(nc), &
+                     minval(jphoto(nl,nc,1:17)),maxval(jphoto(nl,nc,1:17))
+                end do
+            end do
+            close(unit=iunit)
+        end if
+    
+    end subroutine writeJphoto
+
+    !---
 end module modchem

@@ -15,7 +15,7 @@ ModTuv_driver.o: ModTuv_driver.f90 ModTuv.o #chem_list.o
 
 # Regra para compilar .f90 em .o
 .f90.o:
-	$(FC) $(FFLAGS) -c $< $(FCINCLUDES) -I.. -I../relacs_tuv -I../../../framework -I../../external/esmf_time_f90 -I../../physics -I../
+	$(FC) $(FFLAGS) -c $< $(FCINCLUDES) -I.. -I../relacs_tuv -I../../../framework -I../../../external/esmf_time_f90 -I../../physics -I../
 
 clean:
-	$(RM) *.o *.mod *.i
+	$(RM) *.o *.mod *.i *.a

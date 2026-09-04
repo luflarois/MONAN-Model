@@ -22,4 +22,4 @@ chem_spack_fexchem.o: chem_spack_rates.o
 	$(FC) $(FFLAGS) -c $< $(FCINCLUDES) -I.. 
 
 clean:
-	$(RM) *.o *.mod *.i
+	$(RM) *.o *.mod *.i *.a
