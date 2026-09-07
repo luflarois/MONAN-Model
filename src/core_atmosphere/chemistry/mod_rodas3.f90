@@ -231,7 +231,7 @@ contains
               , no_transp_chem_index         &
               , maxblock_size                &
             )
-
+print *,'LFR-DBG: i,last_accepted_dt(i): ',i,last_accepted_dt(i)
             dt_chem = last_accepted_dt(i) !index_g%last_accepted_dt(i) ! dble(dtlt)
             dt_min = max(1.0_c_double, 1.e-2_c_double * real(dtlt * n_dyn_chem, kind=c_double))
             dt_max = real(dtlt * n_dyn_chem, kind=c_double)

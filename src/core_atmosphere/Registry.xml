@@ -404,6 +404,15 @@
                      possible_values="`mpas_dmpar', `mpas_halo'"/>
         </nml_record>
 
+        <nml_record name="chemistry" in_defaults="true">
+               <nml_option name="config_chemistry" type="logical" default_value="false"
+                    description="Ativa o módulo de espécies químicas"/>
+               <nml_option name="config_chem_timestep" type="real" default_value="1.0"
+                     units="s"
+                     description="Chemistry timestep"
+                     possible_values="Positive real values"/>
+        </nml_record>
+
 <!-- **************************************************************************************** -->
 <!-- **************************************  Packages  ************************************** -->
 <!-- **************************************************************************************** -->

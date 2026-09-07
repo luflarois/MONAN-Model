@@ -88,6 +88,7 @@ contains
                                          atm_input,    &
                                          sfc_input
         type(block_type),pointer:: block
+
         
         integer :: mynum, nBlocks, thread, time_lev, i,k,n, ierr
         integer, pointer:: nThreads, nCells
@@ -100,10 +101,18 @@ contains
         character(len=2) ::  ctime
         character(len=StrKIND) :: timeStamp
         real(kind=RKIND), allocatable :: jphoto(:,:,:)
-
+        logical, pointer :: config_chemistry
+        real (kind=RKIND), pointer :: config_chem_timestep
 
         block => domain % blocklist
         myNum = domain%dminfo%my_proc_id
+
+        configs => domain % configs
+        call mpas_pool_get_config(configs, 'config_chemistry', config_chemistry)
+        if(.not. config_chemistry) return
+        call mpas_pool_get_config(configs, 'config_chem_timestep', config_chem_timestep)
+
+
 !print *,'LFR-DBG: Starting chemistry_driver - iTimestep : ', iTimestep
         call mpas_pool_get_subpool(block%structs, 'mesh', mesh)
 !print *,'LFR-DBG: 01'
@@ -124,16 +133,12 @@ contains
 !print *,'LFR-DBG: 08'
 
         call mpas_get_time(curr_time=currTime, dateTimeString=timeStamp, ierr=ierr)
-!print *,'LFR-DBG: 09'
-!print *,'LFR-DBG: Retrieved config_dt = ', config_dt       
-        chem_timestep = config_dt/4.0 !LFR-DBG TBD: Chemistry timestep in seconds (to be set in config file later)
-!print *,'LFR-DBG: Set chem_timestep = ', chem_timestep
 
          !- set the number of dynamics cycles inside each chemistry cycle:
          !- observe that 'config_dt' (timestep of grid) is used.
         !- set the number of dynamics cycles inside each chemistry cycle:
         !- observe that 'config_dt' (timestep of grid) is used.
-        n_dyn_chem = max(1,nint(chem_timestep/config_dt))
+        n_dyn_chem = max(1,nint(config_chem_timestep/config_dt))
 !print *,'LFR-DBG: Set n_dyn_chem = ', n_dyn_chem
 
          !- chemistry is called every 'n_dyn_chem' steps:
@@ -154,6 +159,8 @@ contains
                     maxblock_size = nCells
                     call alloc_chem(nVertLevels,nCells,nVertLevels)
                     call alloc_spack(maxblock_size = maxblock_size)
+                    !For the first time set last_accept_dt to a fixed value
+                    last_accepted_dt = config_dt*n_dyn_chem
                 end if
 !print *,'LFR-DBG: 12.2'
                 !print *, 'Allocating chemistry arrays...'
@@ -208,6 +215,7 @@ write(ctime,fmt='(I2.2)') iTimestep
                  if (iTimestep == 1) call readMergedChemFile("./chem_merged_t60.bin", nSpecies)
                  if (iTimestep == 1) call mapChemToGridNearest(xlat_p, xlon_p, nCells, nVertLevels &
                                                                ,t_p, pres_hyd_p, qv_p, zmid_p, nSpecies)
+
                 call chem_rodas3_dyndt( &
                     nob = nVertLevels &
                   , block_end = block_end &
