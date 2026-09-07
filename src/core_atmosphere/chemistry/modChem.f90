@@ -113,24 +113,13 @@ contains
         call mpas_pool_get_config(configs, 'config_chem_timestep', config_chem_timestep)
 
 
-!print *,'LFR-DBG: Starting chemistry_driver - iTimestep : ', iTimestep
         call mpas_pool_get_subpool(block%structs, 'mesh', mesh)
-!print *,'LFR-DBG: 01'
         call mpas_pool_get_subpool(block%structs,'diag_physics',diag_physics)
-!print *,'LFR-DBG: 02'
         call mpas_pool_get_subpool(block%structs, 'state', state)
-!print *,'LFR-DBG: 03'
         call mpas_pool_get_subpool(block%structs, 'diag', diag)
-!print *,'LFR-DBG: 04'
         call mpas_pool_get_dimension(mesh,'nVertLevels',nVertLevels)
-!print *,'LFR-DBG: 05'
-!        call mpas_pool_get_dimension(mesh,'nSpecies', nSpecies)
-!print *,'LFR-DBG: 06'
         call mpas_pool_get_dimension(mesh, 'nCells', nCells)
-!print *,'LFR-DBG: 07'
-!print *,'LFR-DBG: Retrieved dimensions - nVertLevels = ', nVertLevels, ' nSpecies = ', nSpecies, ' nCells = ', nCells
         call mpas_pool_get_config(block % configs, 'config_dt', config_dt)
-!print *,'LFR-DBG: 08'
 
         call mpas_get_time(curr_time=currTime, dateTimeString=timeStamp, ierr=ierr)
 
@@ -139,21 +128,14 @@ contains
         !- set the number of dynamics cycles inside each chemistry cycle:
         !- observe that 'config_dt' (timestep of grid) is used.
         n_dyn_chem = max(1,nint(config_chem_timestep/config_dt))
-!print *,'LFR-DBG: Set n_dyn_chem = ', n_dyn_chem
 
          !- chemistry is called every 'n_dyn_chem' steps:
          !- observe that 'iTimestep' is the current step of the grid.
         do while(associated(block))
-!print *,'LFR-DBG: 10'
             call mpas_pool_get_dimension(block % dimensions, 'nThreads', nThreads)
-!print *,'LFR-DBG: 11'      
             allocate(jphoto(nVertlevels, nCells, nr_photo))
-!print *,'LFR-DBG: 12'
 
-            if(mod(iTimestep, 4) == 0 .or. iTimestep == 1) then
-                !print *, 'Hello from chemistry_driver', iTimestep
-!print *,'LFR-DBG: 12.1'
-
+            if(mod(iTimestep, n_dyn_chem) == 0 .or. iTimestep == 1) then
                 if(iTimestep == 1) then
                     !print *, 'Allocating chemistry arrays...'
                     maxblock_size = nCells
@@ -162,26 +144,17 @@ contains
                     !For the first time set last_accept_dt to a fixed value
                     last_accepted_dt = config_dt*n_dyn_chem
                 end if
-!print *,'LFR-DBG: 12.2'
                 !print *, 'Allocating chemistry arrays...'
                 call allocate_forall_chemistry(nCells = nCells, nVertLevels = nVertLevels, nChemSpecies = nSpecies)
-!print *,'LFR-DBG: 12.3'
                 !chemistry prep step:
                 time_lev = 1
-!print *,'LFR-DBG: 13'
 !$OMP PARALLEL DO
                 do thread=1,nThreads
                     !print *,'Fazendo thread ', thread !, cellSolveThreadStart(thread), cellSolveThreadEnd(thread)
                     call MPAS_to_chemistry(block%configs,mesh,state,time_lev,diag,diag_physics, nCells, nVertLevels, nSpecies)
                 end do
 !$OMP END PARALLEL DO     
-!print *,'LFR-DBG: 14'
 
-
-
-
-!print *,'LFR-DBG: 15'
-!                print *, 'Calling chemistry driver...'
                 call Tuv_driver(           &
                  domain     = domain       &
                 ,iTimestep  = iTimestep    &             
@@ -209,12 +182,10 @@ call writeJphoto(iTimestep,nCells,nVertLevels,mynum &
                  ,pres_hyd_p,t_p,z_p,zmid_p,dz_p &
                  ,rho_p,pres_p,qv_p,sfc_albedo_p,lwupb_p)
 
-!print *,'LFR-DBG: 16 - Chamando chem_rodas3_dyndt...',203
 write(ctime,fmt='(I2.2)') iTimestep  
-!print *,'LFR-DBG: chemg sizes',size(chem_g),size(chem_g(1)%sc_t_dyn,1),size(chem_g(1)%sc_t_dyn,2)
-                 if (iTimestep == 1) call readMergedChemFile("./chem_merged_t60.bin", nSpecies)
-                 if (iTimestep == 1) call mapChemToGridNearest(xlat_p, xlon_p, nCells, nVertLevels &
-                                                               ,t_p, pres_hyd_p, qv_p, zmid_p, nSpecies)
+if (iTimestep == 1) call readMergedChemFile("./chem_merged_t60.bin", nSpecies)
+if (iTimestep == 1) call mapChemToGridNearest(xlat_p, xlon_p, nCells, nVertLevels &
+                                              ,t_p, pres_hyd_p, qv_p, zmid_p, nSpecies)
 
                 call chem_rodas3_dyndt( &
                     nob = nVertLevels &
@@ -236,16 +207,16 @@ write(ctime,fmt='(I2.2)') iTimestep
                   , maxblock_size = maxblock_size &
                   )
 
-                call write_chem_netcdf( &
-                    chem_g = chem_g      &
-                  , xlat_p = xlat_p      &
-                  , xlon_p = xlon_p      &
-                  , nVertLevels = nVertLevels&
-                  , nCells = nCells      &
-                  , iTimestep = iTimestep   &
-                  , dt = 300.          &
-                  , start_date = "20220714000000"  &
-                    )
+call write_chem_netcdf( &
+    chem_g = chem_g      &
+  , xlat_p = xlat_p      &
+  , xlon_p = xlon_p      &
+  , nVertLevels = nVertLevels&
+  , nCells = nCells      &
+  , iTimestep = iTimestep   &
+  , dt = 300.          &
+  , start_date = "20220714000000"  &
+    )
 
 !                call chemistry_to_MPAS(block%configs,diag,nSpecies,nVertLevels,nCells)
 
