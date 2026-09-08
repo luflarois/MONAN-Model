@@ -675,7 +675,7 @@ contains
       if (iTimestep == 1) then
           call InitTuv('./tuvData/', myNum, 'RELACS', nCells = nCells, nVertLevels = nVertLevels, nr_photo = nr_photo)
       end if
-      print *,'LFR-DBG - Inside TUV driver, timestep: ', iTimestep
+!      print *,'LFR-DBG - Inside TUV driver, timestep: ', iTimestep
       nz = nVertLevels - 1
       maxNRad = nVertLevels
       jphoto = 0.0
@@ -860,7 +860,7 @@ contains
       jphoto(:,:,14) = 0.962055*jphoto(:,:,13)+0.0106247*jphoto(:,:,9)
       jphoto(:,:,16)=(12*jphoto(:,:,13))+(208*jphoto(:,:,15))
 
-      call escreveJphoto(nVertLevels, nCells, nr_photo, jphoto, coszr, glat, glon)
+!      call escreveJphoto(nVertLevels, nCells, nr_photo, jphoto, coszr, glat, glon)
         call deallocate_local_arrays()
 
    end subroutine Tuv_driver

@@ -107,11 +107,13 @@ contains
         block => domain % blocklist
         myNum = domain%dminfo%my_proc_id
 
+
         configs => domain % configs
         call mpas_pool_get_config(configs, 'config_chemistry', config_chemistry)
         if(.not. config_chemistry) return
         call mpas_pool_get_config(configs, 'config_chem_timestep', config_chem_timestep)
 
+        if (myNum == 0) call mpas_log_write(message='Chemistry beggining ...')
 
         call mpas_pool_get_subpool(block%structs, 'mesh', mesh)
         call mpas_pool_get_subpool(block%structs,'diag_physics',diag_physics)
@@ -177,12 +179,12 @@ contains
                 ,jphoto = jphoto           &
                 )
 
-call writeJphoto(iTimestep,nCells,nVertLevels,mynum &
-                 ,xlat_p,xlon_p,coszr_p,jphoto &
-                 ,pres_hyd_p,t_p,z_p,zmid_p,dz_p &
-                 ,rho_p,pres_p,qv_p,sfc_albedo_p,lwupb_p)
+!call writeJphoto(iTimestep,nCells,nVertLevels,mynum &
+!                 ,xlat_p,xlon_p,coszr_p,jphoto &
+!                 ,pres_hyd_p,t_p,z_p,zmid_p,dz_p &
+!                 ,rho_p,pres_p,qv_p,sfc_albedo_p,lwupb_p)
 
-write(ctime,fmt='(I2.2)') iTimestep  
+!write(ctime,fmt='(I2.2)') iTimestep  
 if (iTimestep == 1) call readMergedChemFile("./chem_merged_t60.bin", nSpecies)
 if (iTimestep == 1) call mapChemToGridNearest(xlat_p, xlon_p, nCells, nVertLevels &
                                               ,t_p, pres_hyd_p, qv_p, zmid_p, nSpecies)
@@ -207,21 +209,20 @@ if (iTimestep == 1) call mapChemToGridNearest(xlat_p, xlon_p, nCells, nVertLevel
                   , maxblock_size = maxblock_size &
                   )
 
-call write_chem_netcdf( &
-    chem_g = chem_g      &
-  , xlat_p = xlat_p      &
-  , xlon_p = xlon_p      &
-  , nVertLevels = nVertLevels&
-  , nCells = nCells      &
-  , iTimestep = iTimestep   &
-  , dt = 300.          &
-  , start_date = "20220714000000"  &
-    )
+!call write_chem_netcdf( &
+!    chem_g = chem_g      &
+!  , xlat_p = xlat_p      &
+!  , xlon_p = xlon_p      &
+!  , nVertLevels = nVertLevels&
+!  , nCells = nCells      &
+!  , iTimestep = iTimestep   &
+!  , dt = 300.          &
+!  , start_date = "20220714000000"  &
+!    )
 
 !                call chemistry_to_MPAS(block%configs,diag,nSpecies,nVertLevels,nCells)
 
                 call deallocate_forall_chemistry(block%configs)
-!print *,'LFR-DBG: 18'    
             end if !End of valid
             
             block => block % next

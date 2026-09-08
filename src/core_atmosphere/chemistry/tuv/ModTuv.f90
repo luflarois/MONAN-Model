@@ -1163,7 +1163,7 @@ module ModTuv
                         valJ(ij, iz) = valJ(ij, iz) + djdw * (wu(iw) - wl(iw))
                         valJ(ij, iz) = valJ(ij, iz)/100.0 
 !LFR-DBG only for test
-                        write(51,fmt='(I3.3,1X,I3.3,1X,E15.5)') ij,iz,valJ(ij, iz)
+!                        write(51,fmt='(I3.3,1X,I3.3,1X,E15.5)') ij,iz,valJ(ij, iz)
 !print *, 'LFR-DBG TUV: 012.6 valJ ',valJ(ij, iz)
                     end do
                 end if
