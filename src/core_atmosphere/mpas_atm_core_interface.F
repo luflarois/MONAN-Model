@@ -296,6 +296,8 @@ module atm_core_interface
                           gf_monan_pcvol, &
                           gf_monan_sub3d
 
+      logical, pointer :: config_chemistry
+      logical, pointer :: chemistryActive
 
       !
       ! Retrieve namelist options related to GF-MONAN
@@ -363,6 +365,16 @@ module atm_core_interface
 
          call mpas_log_write('')
       end if
+
+      call mpas_pool_get_config(configs, 'config_chemistry', config_chemistry)
+      call mpas_pool_get_package(packages, 'chemistryActive', chemistryActive)
+
+      call mpas_log_write('config_chemistry associated? $l, value: $l', &
+      logicArgs=[associated(config_chemistry), config_chemistry])
+
+      if (config_chemistry) chemistryActive = .true.
+
+      call mpas_log_write('chemistryActive = $l', logicArgs=[chemistryActive])
 
    end subroutine setup_monan_packages
    !srf

@@ -2067,6 +2067,9 @@
                        <var name="tend_buoyx" name_in_code="buoyx" array_group="convection" units="J kg^{-1} s^{-1}" 
                              description="Tendency of buoyancy excess from the cold pool scheme multiplied by dry air density divided by d(zeta)/dz"
                              packages="gf_monan_cporg"/>
+
+#include "chemistry/Registry_chem_scalars_tend.inc.xml"
+
                 </var_array>
 #endif
         </var_struct>
@@ -4189,6 +4192,9 @@
                      <var name="qg_amb"  name_in_code="qg" array_group="moist" packages="mp_thompson_in;mp_thompson_aers_in;mp_wsm6_in"
                           units="kg kg^{-1}"
                           description="Graupel mixing ratio increment"/>
+
+#include "chemistry/Registry_chem_scalars_amb.inc.xml"
+
                 </var_array>
          </var_struct>
 

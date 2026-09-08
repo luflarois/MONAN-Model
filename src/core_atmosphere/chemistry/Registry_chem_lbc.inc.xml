@@ -1,143 +1,190 @@
 <!-- Chemical Species - lbc- Spack/BRAMS -->
 <var name="lbc_o3" name_in_code="o3" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="O3 concentration (LBC)"/>
 <var name="lbc_h2o2" name_in_code="h2o2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="H2O2 concentration (LBC)"/>
 <var name="lbc_no" name_in_code="no" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="NO concentration (LBC)"/>
 <var name="lbc_no2" name_in_code="no2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="NO2 concentration (LBC)"/>
 <var name="lbc_no3" name_in_code="no3" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="NO3 concentration (LBC)"/>
 <var name="lbc_n2o5" name_in_code="n2o5" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="N2O5 concentration (LBC)"/>
 <var name="lbc_hono" name_in_code="hono" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="HONO concentration (LBC)"/>
 <var name="lbc_hno3" name_in_code="hno3" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="HNO3 concentration (LBC)"/>
 <var name="lbc_hno4" name_in_code="hno4" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="HNO4 concentration (LBC)"/>
 <var name="lbc_so2" name_in_code="so2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="SO2 concentration (LBC)"/>
 <var name="lbc_sulf" name_in_code="sulf" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="SULF concentration (LBC)"/>
 <var name="lbc_co" name_in_code="co" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="CO concentration (LBC)"/>
 <var name="lbc_co2" name_in_code="co2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="CO2 concentration (LBC)"/>
 <var name="lbc_n2" name_in_code="n2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="N2 concentration (LBC)"/>
 <var name="lbc_o2" name_in_code="o2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="O2 concentration (LBC)"/>
 <var name="lbc_h2o" name_in_code="h2o" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="H2O concentration (LBC)"/>
 <var name="lbc_h2" name_in_code="h2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="H2 concentration (LBC)"/>
 <var name="lbc_o3p" name_in_code="o3p" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="O3P concentration (LBC)"/>
 <var name="lbc_o1d" name_in_code="o1d" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="O1D concentration (LBC)"/>
 <var name="lbc_ho" name_in_code="ho" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="HO concentration (LBC)"/>
 <var name="lbc_ho2" name_in_code="ho2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="HO2 concentration (LBC)"/>
 <var name="lbc_ch4" name_in_code="ch4" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="CH4 concentration (LBC)"/>
 <var name="lbc_eth" name_in_code="eth" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="ETH concentration (LBC)"/>
 <var name="lbc_alka" name_in_code="alka" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="ALKA concentration (LBC)"/>
 <var name="lbc_alke" name_in_code="alke" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="ALKE concentration (LBC)"/>
 <var name="lbc_bio" name_in_code="bio" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="BIO concentration (LBC)"/>
 <var name="lbc_aro" name_in_code="aro" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="ARO concentration (LBC)"/>
 <var name="lbc_hcho" name_in_code="hcho" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="HCHO concentration (LBC)"/>
 <var name="lbc_ald" name_in_code="ald" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="ALD concentration (LBC)"/>
 <var name="lbc_ket" name_in_code="ket" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="KET concentration (LBC)"/>
 <var name="lbc_crbo" name_in_code="crbo" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="CRBO concentration (LBC)"/>
 <var name="lbc_onit" name_in_code="onit" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="ONIT concentration (LBC)"/>
 <var name="lbc_pan" name_in_code="pan" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="PAN concentration (LBC)"/>
 <var name="lbc_op1" name_in_code="op1" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="OP1 concentration (LBC)"/>
 <var name="lbc_op2" name_in_code="op2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="OP2 concentration (LBC)"/>
 <var name="lbc_ora1" name_in_code="ora1" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="ORA1 concentration (LBC)"/>
 <var name="lbc_ora2" name_in_code="ora2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="ORA2 concentration (LBC)"/>
 <var name="lbc_mo2" name_in_code="mo2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="MO2 concentration (LBC)"/>
 <var name="lbc_akap" name_in_code="akap" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="AKAP concentration (LBC)"/>
 <var name="lbc_akep" name_in_code="akep" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="AKEP concentration (LBC)"/>
 <var name="lbc_biop" name_in_code="biop" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="BIOP concentration (LBC)"/>
 <var name="lbc_pho" name_in_code="pho" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="PHO concentration (LBC)"/>
 <var name="lbc_add" name_in_code="add" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="ADD concentration (LBC)"/>
 <var name="lbc_arop" name_in_code="arop" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="AROP concentration (LBC)"/>
 <var name="lbc_cbop" name_in_code="cbop" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="CBOP concentration (LBC)"/>
 <var name="lbc_oln" name_in_code="oln" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="OLN concentration (LBC)"/>
 <var name="lbc_xo2" name_in_code="xo2" array_group="chem"
      packages="chemistry" units="ppmv"
+     default_value="0.0"
      description="XO2 concentration (LBC)"/>
 <!-- End of chemical species -->

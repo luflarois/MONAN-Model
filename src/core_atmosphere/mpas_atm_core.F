@@ -48,6 +48,7 @@ module atm_core
       use mpas_attlist, only : mpas_modify_att
       use mpas_string_utils, only : mpas_string_replace
       use mpas_atm_halos, only: atm_build_halo_groups, exchange_halo_group
+      use monan_chemistry_interface, only : zero_chemistry_scalars
 
       implicit none
 
@@ -224,6 +225,7 @@ module atm_core
             call mpas_pool_get_subpool(block % structs, 'state', state)
             call mpas_pool_initialize_time_levels(state)
             block => block % next
+            call zero_chemistry_scalars(state)  
          end do
       end if
 

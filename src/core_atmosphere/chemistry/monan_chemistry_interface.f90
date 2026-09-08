@@ -9,7 +9,8 @@ module monan_chemistry_interface
     public:: allocate_forall_chemistry,   &
              deallocate_forall_chemistry, &
              MPAS_to_chemistry,           &
-             chemistry_to_MPAS
+             chemistry_to_MPAS, &
+             zero_chemistry_scalars
 
     contains
 
@@ -449,5 +450,83 @@ module monan_chemistry_interface
 
 
    end subroutine chemistry_to_MPAS
+
+    !===========================================================================
+    ! zero_chemistry_scalars.f90
+    !
+    ! Gerado automaticamente por gen_registry_chem.py a partir de chem_list.f90.
+    ! Zera todas as 47 especies quimicas (SPACK/BRAMS) dentro do
+    ! var_array "scalars", usando os indices index_<especie> registrados pelo
+    ! Registry (Registry_chem_scalars.inc.xml). Nao mexe em qv/qc/qr e demais
+    ! constituintes que nao sao de quimica.
+    !
+    ! Uso tipico: chamar uma unica vez, no setup do bloco (antes do primeiro
+    ! timestep), para garantir que os campos nasçam com 0.0, ja que o Registry
+    ! nao suporta default_value para constituintes de var_array.
+    !===========================================================================
+    subroutine zero_chemistry_scalars(state)
+    
+       use mpas_derived_types, only : mpas_pool_type
+       use mpas_pool_routines, only : mpas_pool_get_array, mpas_pool_get_dimension
+       use mpas_kind_types, only : RKIND
+       use mpas_log, only : mpas_log_write
+       use mpas_derived_types, only : MPAS_LOG_WARN
+    
+       implicit none
+    
+       type (mpas_pool_type), intent(inout) :: state
+    
+       real (kind=RKIND), dimension(:,:,:), pointer :: scalars
+       integer, pointer :: idx
+       integer :: n, timeLevel
+       integer, parameter :: num_species = 47
+    
+       character(len=8), dimension(num_species) :: species_names = [ &
+            'o3      ', 'h2o2    ', 'no      ', 'no2     ', &
+            'no3     ', 'n2o5    ', 'hono    ', 'hno3    ', &
+            'hno4    ', 'so2     ', 'sulf    ', 'co      ', &
+            'co2     ', 'n2      ', 'o2      ', 'h2o     ', &
+            'h2      ', 'o3p     ', 'o1d     ', 'ho      ', &
+            'ho2     ', 'ch4     ', 'eth     ', 'alka    ', &
+            'alke    ', 'bio     ', 'aro     ', 'hcho    ', &
+            'ald     ', 'ket     ', 'crbo    ', 'onit    ', &
+            'pan     ', 'op1     ', 'op2     ', 'ora1    ', &
+            'ora2    ', 'mo2     ', 'akap    ', 'akep    ', &
+            'biop    ', 'pho     ', 'add     ', 'arop    ', &
+            'cbop    ', 'oln     ', 'xo2     ' ]
+    
+       ! Zera para os time levels 1 e 2 (os dois niveis de tempo do "state" no
+       ! nucleo dinamico MPAS-A padrao). Ajuste se o seu build usar outro numero.
+       do timeLevel = 1, 2
+    
+          nullify(scalars)
+          call mpas_pool_get_array(state, 'scalars', scalars, timeLevel)
+    
+          if (.not. associated(scalars)) then
+             call mpas_log_write('zero_chemistry_scalars: scalars nao associado para timeLevel=$i', &
+                  messageType=MPAS_LOG_WARN, intArgs=[timeLevel])
+             cycle
+          end if
+    
+          do n = 1, num_species
+             nullify(idx)
+             call mpas_pool_get_dimension(state, 'index_'//trim(species_names(n)), idx)
+    
+             if (associated(idx)) then
+                scalars(idx, :, :) = 0.0_RKIND
+             else
+                call mpas_log_write('zero_chemistry_scalars: indice nao encontrado para especie ('// &
+                     trim(species_names(n))//'). Pacote chemistry ativo?', &
+                     messageType=MPAS_LOG_WARN)
+             end if
+          end do
+    
+       end do
+    
+       call mpas_log_write('zero_chemistry_scalars: $i especies quimicas zeradas.', &
+            intArgs=[num_species])
+    
+    end subroutine zero_chemistry_scalars
+
 
 end module monan_chemistry_interface
