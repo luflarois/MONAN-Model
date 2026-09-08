@@ -443,6 +443,8 @@
                 <package name="gf_monan_pcvol" description="GF-MONAN passive cloud volume"/>
                 <package name="gf_monan_sub3d" description="GF-MONAN 3d lateral spreading of the env subsidence"/>
 
+                <package name="chemistry" description="Chemical species (SPACK/BRAMS) transported as scalars"/>
+
         </packages>
 
 
@@ -1699,6 +1701,9 @@
                         <var name="buoyx" array_group="convection" units="J kg^{-1}"
                              description="Buoyancy excess from the cold pool scheme"
                              packages="gf_monan_cporg"/>
+
+#include "chemistry/Registry_chem_scalars.inc.xml"
+
                 </var_array>
 #endif
 
@@ -2140,6 +2145,9 @@
                         <var name="lbc_nwfa" name_in_code="nwfa" array_group="number" packages="mp_thompson_aers_in"
                              units="m^{-3} s^{-1}"
                              description="Lateral boundary tendency of water-friendly aerosol number concentration"/>
+
+#include "chemistry/Registry_chem_lbc.inc.xml"
+
                 </var_array>
         </var_struct>
 

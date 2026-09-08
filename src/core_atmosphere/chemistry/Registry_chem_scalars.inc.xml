@@ -1,0 +1,190 @@
+<!-- Chemical Species Scalars - Spack/BRAMS -->
+<var name="o3" array_group="chem" name_in_code="index_o3"
+     units="ppmv" description="O3 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="h2o2" array_group="chem" name_in_code="index_h2o2"
+     units="ppmv" description="H2O2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="no" array_group="chem" name_in_code="index_no"
+     units="ppmv" description="NO concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="no2" array_group="chem" name_in_code="index_no2"
+     units="ppmv" description="NO2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="no3" array_group="chem" name_in_code="index_no3"
+     units="ppmv" description="NO3 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="n2o5" array_group="chem" name_in_code="index_n2o5"
+     units="ppmv" description="N2O5 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="hono" array_group="chem" name_in_code="index_hono"
+     units="ppmv" description="HONO concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="hno3" array_group="chem" name_in_code="index_hno3"
+     units="ppmv" description="HNO3 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="hno4" array_group="chem" name_in_code="index_hno4"
+     units="ppmv" description="HNO4 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="so2" array_group="chem" name_in_code="index_so2"
+     units="ppmv" description="SO2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="sulf" array_group="chem" name_in_code="index_sulf"
+     units="ppmv" description="SULF concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="co" array_group="chem" name_in_code="index_co"
+     units="ppmv" description="CO concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="co2" array_group="chem" name_in_code="index_co2"
+     units="ppmv" description="CO2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="n2" array_group="chem" name_in_code="index_n2"
+     units="ppmv" description="N2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="o2" array_group="chem" name_in_code="index_o2"
+     units="ppmv" description="O2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="h2o" array_group="chem" name_in_code="index_h2o"
+     units="ppmv" description="H2O concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="h2" array_group="chem" name_in_code="index_h2"
+     units="ppmv" description="H2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="o3p" array_group="chem" name_in_code="index_o3p"
+     units="ppmv" description="O3P concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="o1d" array_group="chem" name_in_code="index_o1d"
+     units="ppmv" description="O1D concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="ho" array_group="chem" name_in_code="index_ho"
+     units="ppmv" description="HO concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="ho2" array_group="chem" name_in_code="index_ho2"
+     units="ppmv" description="HO2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="ch4" array_group="chem" name_in_code="index_ch4"
+     units="ppmv" description="CH4 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="eth" array_group="chem" name_in_code="index_eth"
+     units="ppmv" description="ETH concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="alka" array_group="chem" name_in_code="index_alka"
+     units="ppmv" description="ALKA concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="alke" array_group="chem" name_in_code="index_alke"
+     units="ppmv" description="ALKE concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="bio" array_group="chem" name_in_code="index_bio"
+     units="ppmv" description="BIO concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="aro" array_group="chem" name_in_code="index_aro"
+     units="ppmv" description="ARO concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="hcho" array_group="chem" name_in_code="index_hcho"
+     units="ppmv" description="HCHO concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="ald" array_group="chem" name_in_code="index_ald"
+     units="ppmv" description="ALD concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="ket" array_group="chem" name_in_code="index_ket"
+     units="ppmv" description="KET concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="crbo" array_group="chem" name_in_code="index_crbo"
+     units="ppmv" description="CRBO concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="onit" array_group="chem" name_in_code="index_onit"
+     units="ppmv" description="ONIT concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="pan" array_group="chem" name_in_code="index_pan"
+     units="ppmv" description="PAN concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="op1" array_group="chem" name_in_code="index_op1"
+     units="ppmv" description="OP1 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="op2" array_group="chem" name_in_code="index_op2"
+     units="ppmv" description="OP2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="ora1" array_group="chem" name_in_code="index_ora1"
+     units="ppmv" description="ORA1 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="ora2" array_group="chem" name_in_code="index_ora2"
+     units="ppmv" description="ORA2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="mo2" array_group="chem" name_in_code="index_mo2"
+     units="ppmv" description="MO2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="akap" array_group="chem" name_in_code="index_akap"
+     units="ppmv" description="AKAP concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="akep" array_group="chem" name_in_code="index_akep"
+     units="ppmv" description="AKEP concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="biop" array_group="chem" name_in_code="index_biop"
+     units="ppmv" description="BIOP concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="pho" array_group="chem" name_in_code="index_pho"
+     units="ppmv" description="PHO concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="add" array_group="chem" name_in_code="index_add"
+     units="ppmv" description="ADD concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="arop" array_group="chem" name_in_code="index_arop"
+     units="ppmv" description="AROP concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="cbop" array_group="chem" name_in_code="index_cbop"
+     units="ppmv" description="CBOP concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="oln" array_group="chem" name_in_code="index_oln"
+     units="ppmv" description="OLN concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<var name="xo2" array_group="chem" name_in_code="index_xo2"
+     units="ppmv" description="XO2 concentration"
+     packages="chemistry"
+     streams="input;output"/>
+<!-- End of chemical species -->
