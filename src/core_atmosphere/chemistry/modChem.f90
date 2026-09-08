@@ -110,7 +110,10 @@ contains
 
         configs => domain % configs
         call mpas_pool_get_config(configs, 'config_chemistry', config_chemistry)
+
+        !Chemistry only will be processed if config_chemistry = true in namelist
         if(.not. config_chemistry) return
+        !Getting the default timestep for chemistry from namelist
         call mpas_pool_get_config(configs, 'config_chem_timestep', config_chem_timestep)
 
         if (myNum == 0) call mpas_log_write(message='Chemistry beggining ...')
