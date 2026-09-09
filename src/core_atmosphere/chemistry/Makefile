@@ -38,7 +38,7 @@ mod_rodas3.o: mod_rodas3.f90 modMemoryChem.o
 monan_chemistry_vars.o: monan_chemistry_vars.f90
 modChem.o: modChem.f90 monan_chemistry_vars.o monan_chemistry_interface.o mod_rodas3.o modMemoryChem.o \
 	tuv_rad modTest.o mod_chem_output.o
-monan_chemistry_interface.o: monan_chemistry_interface.f90 monan_chemistry_vars.mod
+monan_chemistry_interface.o: monan_chemistry_interface.f90 monan_chemistry_vars.o modMemoryChem.o
 modMemoryChem.o: modMemoryChem.f90
 
 # Regra para compilar .f90 em .o

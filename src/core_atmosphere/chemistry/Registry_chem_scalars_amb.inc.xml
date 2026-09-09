@@ -1,0 +1,190 @@
+<!-- Chemical Species Ambient (LBC blending) - Spack/BRAMS -->
+<var name="o3_amb" name_in_code="o3" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="O3 concentration increment (ambient/LBC blending)"/>
+<var name="h2o2_amb" name_in_code="h2o2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="H2O2 concentration increment (ambient/LBC blending)"/>
+<var name="no_amb" name_in_code="no" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="NO concentration increment (ambient/LBC blending)"/>
+<var name="no2_amb" name_in_code="no2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="NO2 concentration increment (ambient/LBC blending)"/>
+<var name="no3_amb" name_in_code="no3" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="NO3 concentration increment (ambient/LBC blending)"/>
+<var name="n2o5_amb" name_in_code="n2o5" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="N2O5 concentration increment (ambient/LBC blending)"/>
+<var name="hono_amb" name_in_code="hono" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="HONO concentration increment (ambient/LBC blending)"/>
+<var name="hno3_amb" name_in_code="hno3" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="HNO3 concentration increment (ambient/LBC blending)"/>
+<var name="hno4_amb" name_in_code="hno4" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="HNO4 concentration increment (ambient/LBC blending)"/>
+<var name="so2_amb" name_in_code="so2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="SO2 concentration increment (ambient/LBC blending)"/>
+<var name="sulf_amb" name_in_code="sulf" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="SULF concentration increment (ambient/LBC blending)"/>
+<var name="co_amb" name_in_code="co" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="CO concentration increment (ambient/LBC blending)"/>
+<var name="co2_amb" name_in_code="co2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="CO2 concentration increment (ambient/LBC blending)"/>
+<var name="n2_amb" name_in_code="n2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="N2 concentration increment (ambient/LBC blending)"/>
+<var name="o2_amb" name_in_code="o2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="O2 concentration increment (ambient/LBC blending)"/>
+<var name="h2o_amb" name_in_code="h2o" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="H2O concentration increment (ambient/LBC blending)"/>
+<var name="h2_amb" name_in_code="h2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="H2 concentration increment (ambient/LBC blending)"/>
+<var name="o3p_amb" name_in_code="o3p" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="O3P concentration increment (ambient/LBC blending)"/>
+<var name="o1d_amb" name_in_code="o1d" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="O1D concentration increment (ambient/LBC blending)"/>
+<var name="ho_amb" name_in_code="ho" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="HO concentration increment (ambient/LBC blending)"/>
+<var name="ho2_amb" name_in_code="ho2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="HO2 concentration increment (ambient/LBC blending)"/>
+<var name="ch4_amb" name_in_code="ch4" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="CH4 concentration increment (ambient/LBC blending)"/>
+<var name="eth_amb" name_in_code="eth" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="ETH concentration increment (ambient/LBC blending)"/>
+<var name="alka_amb" name_in_code="alka" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="ALKA concentration increment (ambient/LBC blending)"/>
+<var name="alke_amb" name_in_code="alke" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="ALKE concentration increment (ambient/LBC blending)"/>
+<var name="bio_amb" name_in_code="bio" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="BIO concentration increment (ambient/LBC blending)"/>
+<var name="aro_amb" name_in_code="aro" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="ARO concentration increment (ambient/LBC blending)"/>
+<var name="hcho_amb" name_in_code="hcho" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="HCHO concentration increment (ambient/LBC blending)"/>
+<var name="ald_amb" name_in_code="ald" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="ALD concentration increment (ambient/LBC blending)"/>
+<var name="ket_amb" name_in_code="ket" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="KET concentration increment (ambient/LBC blending)"/>
+<var name="crbo_amb" name_in_code="crbo" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="CRBO concentration increment (ambient/LBC blending)"/>
+<var name="onit_amb" name_in_code="onit" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="ONIT concentration increment (ambient/LBC blending)"/>
+<var name="pan_amb" name_in_code="pan" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="PAN concentration increment (ambient/LBC blending)"/>
+<var name="op1_amb" name_in_code="op1" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="OP1 concentration increment (ambient/LBC blending)"/>
+<var name="op2_amb" name_in_code="op2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="OP2 concentration increment (ambient/LBC blending)"/>
+<var name="ora1_amb" name_in_code="ora1" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="ORA1 concentration increment (ambient/LBC blending)"/>
+<var name="ora2_amb" name_in_code="ora2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="ORA2 concentration increment (ambient/LBC blending)"/>
+<var name="mo2_amb" name_in_code="mo2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="MO2 concentration increment (ambient/LBC blending)"/>
+<var name="akap_amb" name_in_code="akap" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="AKAP concentration increment (ambient/LBC blending)"/>
+<var name="akep_amb" name_in_code="akep" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="AKEP concentration increment (ambient/LBC blending)"/>
+<var name="biop_amb" name_in_code="biop" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="BIOP concentration increment (ambient/LBC blending)"/>
+<var name="pho_amb" name_in_code="pho" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="PHO concentration increment (ambient/LBC blending)"/>
+<var name="add_amb" name_in_code="add" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="ADD concentration increment (ambient/LBC blending)"/>
+<var name="arop_amb" name_in_code="arop" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="AROP concentration increment (ambient/LBC blending)"/>
+<var name="cbop_amb" name_in_code="cbop" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="CBOP concentration increment (ambient/LBC blending)"/>
+<var name="oln_amb" name_in_code="oln" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="OLN concentration increment (ambient/LBC blending)"/>
+<var name="xo2_amb" name_in_code="xo2" array_group="chem"
+     packages="chemistry" units="ppmv"
+     default_value="0.0"
+     description="XO2 concentration increment (ambient/LBC blending)"/>
+<!-- End of chemical species ambient -->

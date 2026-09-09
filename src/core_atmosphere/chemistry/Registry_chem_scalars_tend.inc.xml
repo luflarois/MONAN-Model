@@ -1,0 +1,190 @@
+<!-- Chemical Species Tendencies - Spack/BRAMS -->
+<var name="tend_o3" array_group="chem" name_in_code="o3"
+     units="ppmv s^{-1}" description="Tendency of O3 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_h2o2" array_group="chem" name_in_code="h2o2"
+     units="ppmv s^{-1}" description="Tendency of H2O2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_no" array_group="chem" name_in_code="no"
+     units="ppmv s^{-1}" description="Tendency of NO concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_no2" array_group="chem" name_in_code="no2"
+     units="ppmv s^{-1}" description="Tendency of NO2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_no3" array_group="chem" name_in_code="no3"
+     units="ppmv s^{-1}" description="Tendency of NO3 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_n2o5" array_group="chem" name_in_code="n2o5"
+     units="ppmv s^{-1}" description="Tendency of N2O5 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_hono" array_group="chem" name_in_code="hono"
+     units="ppmv s^{-1}" description="Tendency of HONO concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_hno3" array_group="chem" name_in_code="hno3"
+     units="ppmv s^{-1}" description="Tendency of HNO3 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_hno4" array_group="chem" name_in_code="hno4"
+     units="ppmv s^{-1}" description="Tendency of HNO4 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_so2" array_group="chem" name_in_code="so2"
+     units="ppmv s^{-1}" description="Tendency of SO2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_sulf" array_group="chem" name_in_code="sulf"
+     units="ppmv s^{-1}" description="Tendency of SULF concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_co" array_group="chem" name_in_code="co"
+     units="ppmv s^{-1}" description="Tendency of CO concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_co2" array_group="chem" name_in_code="co2"
+     units="ppmv s^{-1}" description="Tendency of CO2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_n2" array_group="chem" name_in_code="n2"
+     units="ppmv s^{-1}" description="Tendency of N2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_o2" array_group="chem" name_in_code="o2"
+     units="ppmv s^{-1}" description="Tendency of O2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_h2o" array_group="chem" name_in_code="h2o"
+     units="ppmv s^{-1}" description="Tendency of H2O concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_h2" array_group="chem" name_in_code="h2"
+     units="ppmv s^{-1}" description="Tendency of H2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_o3p" array_group="chem" name_in_code="o3p"
+     units="ppmv s^{-1}" description="Tendency of O3P concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_o1d" array_group="chem" name_in_code="o1d"
+     units="ppmv s^{-1}" description="Tendency of O1D concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_ho" array_group="chem" name_in_code="ho"
+     units="ppmv s^{-1}" description="Tendency of HO concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_ho2" array_group="chem" name_in_code="ho2"
+     units="ppmv s^{-1}" description="Tendency of HO2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_ch4" array_group="chem" name_in_code="ch4"
+     units="ppmv s^{-1}" description="Tendency of CH4 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_eth" array_group="chem" name_in_code="eth"
+     units="ppmv s^{-1}" description="Tendency of ETH concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_alka" array_group="chem" name_in_code="alka"
+     units="ppmv s^{-1}" description="Tendency of ALKA concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_alke" array_group="chem" name_in_code="alke"
+     units="ppmv s^{-1}" description="Tendency of ALKE concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_bio" array_group="chem" name_in_code="bio"
+     units="ppmv s^{-1}" description="Tendency of BIO concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_aro" array_group="chem" name_in_code="aro"
+     units="ppmv s^{-1}" description="Tendency of ARO concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_hcho" array_group="chem" name_in_code="hcho"
+     units="ppmv s^{-1}" description="Tendency of HCHO concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_ald" array_group="chem" name_in_code="ald"
+     units="ppmv s^{-1}" description="Tendency of ALD concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_ket" array_group="chem" name_in_code="ket"
+     units="ppmv s^{-1}" description="Tendency of KET concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_crbo" array_group="chem" name_in_code="crbo"
+     units="ppmv s^{-1}" description="Tendency of CRBO concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_onit" array_group="chem" name_in_code="onit"
+     units="ppmv s^{-1}" description="Tendency of ONIT concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_pan" array_group="chem" name_in_code="pan"
+     units="ppmv s^{-1}" description="Tendency of PAN concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_op1" array_group="chem" name_in_code="op1"
+     units="ppmv s^{-1}" description="Tendency of OP1 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_op2" array_group="chem" name_in_code="op2"
+     units="ppmv s^{-1}" description="Tendency of OP2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_ora1" array_group="chem" name_in_code="ora1"
+     units="ppmv s^{-1}" description="Tendency of ORA1 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_ora2" array_group="chem" name_in_code="ora2"
+     units="ppmv s^{-1}" description="Tendency of ORA2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_mo2" array_group="chem" name_in_code="mo2"
+     units="ppmv s^{-1}" description="Tendency of MO2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_akap" array_group="chem" name_in_code="akap"
+     units="ppmv s^{-1}" description="Tendency of AKAP concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_akep" array_group="chem" name_in_code="akep"
+     units="ppmv s^{-1}" description="Tendency of AKEP concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_biop" array_group="chem" name_in_code="biop"
+     units="ppmv s^{-1}" description="Tendency of BIOP concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_pho" array_group="chem" name_in_code="pho"
+     units="ppmv s^{-1}" description="Tendency of PHO concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_add" array_group="chem" name_in_code="add"
+     units="ppmv s^{-1}" description="Tendency of ADD concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_arop" array_group="chem" name_in_code="arop"
+     units="ppmv s^{-1}" description="Tendency of AROP concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_cbop" array_group="chem" name_in_code="cbop"
+     units="ppmv s^{-1}" description="Tendency of CBOP concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_oln" array_group="chem" name_in_code="oln"
+     units="ppmv s^{-1}" description="Tendency of OLN concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<var name="tend_xo2" array_group="chem" name_in_code="xo2"
+     units="ppmv s^{-1}" description="Tendency of XO2 concentration"
+     packages="chemistry"
+     default_value="0.0"/>
+<!-- End of chemical species tendencies -->

@@ -44,7 +44,6 @@ module monan_chemistry_interface
     !=================================================================================================================
     integer, intent(in) :: nCells, nVertLevels, nChemSpecies
 
-!print *,'LFR-DBG: Block 1'
     ! Alocações inalteradas (já estão corretas)
     if(.not.allocated(xlon_p) ) allocate(xlon_p(nCells)               )
     if(.not.allocated(xlat_p) ) allocate(xlat_p(nCells)               )
@@ -53,7 +52,6 @@ module monan_chemistry_interface
     if(.not.allocated(psfc_p) ) allocate(psfc_p(nCells)         )
     if(.not.allocated(ptop_p) ) allocate(ptop_p(nCells)         )
     if(.not.allocated(coszr_p)      ) allocate(coszr_p(nCells)              )
-!print *,'LFR-DBG: Block 2'
     if(.not.allocated(o3_p)   ) allocate(o3_p(nVertlevels, nCells)    )
     if(.not.allocated(u_p)    ) allocate(u_p(nVertlevels, nCells)    )
     if(.not.allocated(v_p)    ) allocate(v_p(nVertlevels, nCells)    )
@@ -71,22 +69,15 @@ module monan_chemistry_interface
     if(.not.allocated(rho_p)  ) allocate(rho_p(nVertlevels, nCells)  )
     if(.not.allocated(rh_p)   ) allocate(rh_p(nVertlevels, nCells)   )
     if(.not.allocated(znu_p)  ) allocate(znu_p(nVertlevels, nCells)  )
-!print *,'LFR-DBG: Block 3'
-    if(.not. allocated(chem_conc_p)) allocate(chem_conc_p(nVertlevels, nCells, nChemSpecies) )
-    if(.not. allocated(chem_tend_p)) allocate(chem_tend_p(nVertlevels, nCells, nChemSpecies) )
-    if(.not. allocated(chem_tend_dyn_p)) allocate(chem_tend_dyn_p(nVertlevels, nCells, nChemSpecies) )
-!print *,'LFR-DBG: Block 4'
     if(.not.allocated(w_p)    ) allocate(w_p(nVertlevels+1, nCells)    )
     if(.not.allocated(pres2_p)) allocate(pres2_p(nVertlevels+1, nCells))
     if(.not.allocated(t2_p)   ) allocate(t2_p(nVertlevels+1, nCells)   )
-!print *,'LFR-DBG: Block 5'
     if(.not.allocated(qv_p)   ) allocate(qv_p(nVertlevels, nCells)   )
     if(.not.allocated(qc_p)   ) allocate(qc_p(nVertlevels, nCells)   )
     if(.not.allocated(qr_p)   ) allocate(qr_p(nVertlevels, nCells)   )
     if(.not.allocated(qi_p)   ) allocate(qi_p(nVertlevels, nCells)   )
     if(.not.allocated(qs_p)   ) allocate(qs_p(nVertlevels, nCells)   )
     if(.not.allocated(qg_p)   ) allocate(qg_p(nVertlevels, nCells)   )
-!print *,'LFR-DBG: Block 6'
     if(.not.allocated(psfc_hyd_p)  ) allocate(psfc_hyd_p(nCells)          )
     if(.not.allocated(psfc_hydd_p) ) allocate(psfc_hydd_p(nCells)         )
     if(.not.allocated(pres_hyd_p)  ) allocate(pres_hyd_p(nVertlevels, nCells)  )
@@ -94,7 +85,7 @@ module monan_chemistry_interface
     if(.not.allocated(pres2_hyd_p) ) allocate(pres2_hyd_p(nVertlevels+1, nCells) )
     if(.not.allocated(pres2_hydd_p)) allocate(pres2_hydd_p(nVertlevels+1, nCells))
     if(.not.allocated(znu_hyd_p)   ) allocate(znu_hyd_p(nVertlevels, nCells)   )
-!print *,'LFR-DBG: Block 7'
+
     end subroutine allocate_forall_chemistry
 
     !=================================================================================================================
@@ -128,10 +119,6 @@ module monan_chemistry_interface
         if(allocated(rh_p)   ) deallocate(rh_p)
         if(allocated(znu_hyd_p)  ) deallocate(znu_hyd_p)
 
-        if(allocated(chem_conc_p)) deallocate(chem_conc_p)
-        if(allocated(chem_tend_p)) deallocate(chem_tend_p)
-        if(allocated(chem_tend_dyn_p)) deallocate(chem_tend_dyn_p)
-
         if(allocated(w_p)    ) deallocate(w_p)
         if(allocated(pres2_p)) deallocate(pres2_p)
         if(allocated(t2_p)   ) deallocate(t2_p)
@@ -150,7 +137,7 @@ module monan_chemistry_interface
         if(allocated(pres2_hyd_p) ) deallocate(pres2_hyd_p)
         if(allocated(pres2_hydd_p)) deallocate(pres2_hydd_p)
         if(allocated(znu_hyd_p)   ) deallocate(znu_hyd_p)
-    ! (inalterado, omitido por brevidade)
+
     end subroutine deallocate_forall_chemistry
 
     !=================================================================================================================
@@ -228,7 +215,7 @@ module monan_chemistry_interface
                messageType=MPAS_LOG_WARN)
           idxChem(spc) = -1   ! sentinela, pra facilitar debug depois
        end if
-        end do
+    end do
 
     do i = 1,nCells
         do k = 1, nVertLevels
@@ -259,7 +246,6 @@ module monan_chemistry_interface
 
         end do
     end do
- !print *, 'LFR-DBG: MPAS_to_chemistry: after filling _p arrays'; call flush(6)
     do i = 1,nCells
         xlat_p(i)       = latCell(i) / degrad
         xlon_p(i)       = lonCell(i) / degrad
@@ -268,7 +254,6 @@ module monan_chemistry_interface
         coszr_p(i)      = coszr(i)
     end do
 
-    !print *, 'LFR-DBG: MPAS_to_chemistry: calculating surface pressure (hydrostatic)'; call flush(6)
     do i = 1,nCells
         tem1 = zgrid(2,i)-zgrid(1,i)
         tem2 = zgrid(3,i)-zgrid(2,i)
@@ -286,16 +271,12 @@ module monan_chemistry_interface
             znu_p(k,i) = pres_p(k,i) / surface_pressure(i)
         end do
     end do
-
-    !print *, 'LFR-DBG: MPAS_to_chemistry: Arrays em níveis w (kts:kte+1)'; call flush(6)
     do i = 1,nCells
         do k = 1, nVertLevels  !+1
             w_p(k,i) = w(k,i)
             z_p(k,i) = zgrid(k,i)
         end do
     end do
-
-    !print *, 'LFR-DBG: MPAS_to_chemistry: Interpolação de pressão e temperatura para níveis w'; call flush(6)
     do i = 1,nCells
         do k = 2, nVertLevels
             tem1 = 1./(zgrid(k+1,i)-zgrid(k-1,i))
@@ -305,8 +286,6 @@ module monan_chemistry_interface
             pres2_p(k,i) = fzm_p(k,i)*pres_p(k,i) + fzp_p(k,i)*pres_p(k-1,i)
         end do
     end do
-
-    !print *, 'LFR-DBG: MPAS_to_chemistry: Topo do modelo'; call flush(6)
     k = nVertLevels+1
     do i = 1,nCells
         z0 = zgrid(k,i)
@@ -317,8 +296,6 @@ module monan_chemistry_interface
         t2_p(k,i) = w1*t_p(k-1,i) + w2*t_p(k-2,i)
         pres2_p(k,i) = exp(w1*log(pres_p(k-1,i))+w2*log(pres_p(k-2,i)))
     end do
-
-    !print *, 'LFR-DBG: MPAS_to_chemistry: Extrapolação para superfície'; call flush(6)
     k = nVertLevels-1
     do i = 1,nCells
         z0 = zgrid(k,i)
@@ -331,8 +308,6 @@ module monan_chemistry_interface
         psfc_p(i) = pres2_p(k,i)
         psfc_p(i) = surface_pressure(i)
     end do
-
-    !print *, 'LFR-DBG: MPAS_to_chemistry: Calculating hydrostatic pressure'; call flush(6)
     do i = 1,nCells
         k = nVertLevels+1
         pres2_hyd_p(k,i)  = pres2_p(k,i)
@@ -354,7 +329,6 @@ module monan_chemistry_interface
     end do
 
     ! Salvar pressão no topo
-    !print *, 'LFR-DBG: MPAS_to_chemistry: Saving pressure at the top'; call flush(6)
     do i = 1,nCells
         plrad(i) = pres2_p(nVertLevels+1,i) 
     end do

@@ -104,23 +104,19 @@ contains
         logical, pointer :: config_chemistry
         real (kind=RKIND), pointer :: config_chem_timestep
 
-        real (kind=RKIND), dimension(:,:,:), pointer :: scalars
-        real(kind=RKIND) :: no2_local
-        integer,pointer:: index_no2
-
         block => domain % blocklist
         myNum = domain%dminfo%my_proc_id
-
 
         configs => domain % configs
         call mpas_pool_get_config(configs, 'config_chemistry', config_chemistry)
 
-        !Chemistry only will be processed if config_chemistry = true in namelist
+        !Chemistry only will be processed only if config_chemistry. Setup in namelist
         if(.not. config_chemistry) return
         !Getting the default timestep for chemistry from namelist
         call mpas_pool_get_config(configs, 'config_chem_timestep', config_chem_timestep)
 
-        if (myNum == 0) call mpas_log_write(message='Chemistry beggining ...')
+        call mpas_get_time(curr_time=currTime, dateTimeString=timeStamp, ierr=ierr)
+        if (myNum == 0) call mpas_log_write(message='Chemistry beggining ...'//trim(timeStamp))
 
         call mpas_pool_get_subpool(block%structs, 'mesh', mesh)
         call mpas_pool_get_subpool(block%structs,'diag_physics',diag_physics)
@@ -130,11 +126,8 @@ contains
         call mpas_pool_get_dimension(mesh, 'nCells', nCells)
         call mpas_pool_get_config(block % configs, 'config_dt', config_dt)
 
-        call mpas_get_time(curr_time=currTime, dateTimeString=timeStamp, ierr=ierr)
-
-
-         !- set the number of dynamics cycles inside each chemistry cycle:
-         !- observe that 'config_dt' (timestep of grid) is used.
+        !- set the number of dynamics cycles inside each chemistry cycle:
+        !- observe that 'config_dt' (timestep of grid) is used.
         !- set the number of dynamics cycles inside each chemistry cycle:
         !- observe that 'config_dt' (timestep of grid) is used.
         n_dyn_chem = max(1,nint(config_chem_timestep/config_dt))
@@ -186,11 +179,6 @@ contains
                 ,mynum = mynum             &
                 ,jphoto = jphoto           &
                 )
-
-!call writeJphoto(iTimestep,nCells,nVertLevels,mynum &
-!                 ,xlat_p,xlon_p,coszr_p,jphoto &
-!                 ,pres_hyd_p,t_p,z_p,zmid_p,dz_p &
-!                 ,rho_p,pres_p,qv_p,sfc_albedo_p,lwupb_p)
 
 !write(ctime,fmt='(I2.2)') iTimestep  
 if (iTimestep == 1) call readMergedChemFile("./chem_merged_t60.bin", nSpecies)
@@ -283,89 +271,4 @@ if (iTimestep == 1) call mapChemToGridNearest(xlat_p, xlon_p, nCells, nVertLevel
 
     end  subroutine chem_accum
 
-
-    !==============================================================================
-    subroutine writeJphoto(iTimestep,nCells,nVertLevels,mynum &
-                 ,glat,glon,coszr,jphoto &
-                 ,press,temp,zt_,zm_,dzp &
-                 ,rho,pp,qv,sfc_albedo,rlongup)
-
-        !> @brief Brief description
-        !>
-        !> @project MONAN-Model
-        !>
-        !> @author luflarois <luflarois@gmail.com>
-        !> @date 2026-09-01
-        !> @version 0.1.0
-        !> @details 
-        !> Brief description
-        !> 
-        !> @license This code is under GPLv3 License, see it in <https://www.gnu.org/licenses/gpl-3.0.en.html>
-        !==============================================================================
-        implicit none
-    
-        !Parameters:
-        character(len=*), parameter :: source_file    = 'modChem.f90'
-        !> name of source file - used for debug
-        character(len=*), parameter :: procedure_name = 'writeJphoto'
-        !> name of this procedure - used for debug
-    
-        !Inputs:
-        integer, intent(in) :: iTimestep,nCells,nVertLevels,mynum
-        real,dimension(nVertLevels,nCells),intent(in) :: press
-        !! Pressure field [Pa]
-        real,dimension(nVertLevels,nCells),intent(in) :: temp
-        !! Temperature field [K]
-        real,dimension(nVertLevels,nCells),intent(in) :: zt_
-        !! Geometric height of layer top [m]
-        real,dimension(nVertLevels,nCells),intent(in) :: zm_
-        !! Geometric height of layer midpoint [m]
-        real,dimension(nVertLevels,nCells),intent(in) :: dzp
-        !! Thickness of each layer [m]
-        real,dimension(nVertLevels,nCells),intent(in) :: rho
-        !! Air density at layer midpoint [kg/m3]
-        real,dimension(nVertLevels,nCells),intent(in) :: pp
-        !! Pressure at layer midpoint [Pa]  - SOundings
-        real,dimension(nCells),intent(in)         :: coszr
-        !! Cosine of solar zenith angle at each cell [unitless]
-        real,dimension(nCells),intent(in)         :: rlongup
-        !! !all-sky upwelling longwave flux at bottom-of-atmosphere
-        real,dimension(nCells),intent(in)         :: glat
-        !! latitude, south is negative [degrees]
-        real,dimension(nCells),intent(in)         :: glon
-        !! longitude, west is negative [degrees]
-        real,dimension(nVertLevels,nCells),intent(in) :: qv
-        !! water vapor mixing ratio   [kg/kg]
-        real,dimension(nCells),intent(in) :: sfc_albedo
-        !! Surface albedo
-        !!
-        real(kind=RKIND), intent(in) :: jphoto(nVertlevels, nCells, nr_photo)
- 
-    
-        integer :: iunit, nl, nc
-        character(len=17) :: filename
-
-        !Code area
-        if(iTimestep == 1 .or. iTimestep == 144 ) then
-            write(filename,fmt='("Jphoto_",I2.2,"_",I3.3,".csv")') mynum,iTimestep
-            open(newunit=iunit,file=filename,status='replace',action='write')
-            write(iunit,*) "nc,glat,glon,zt,coszr," &
-                     //"press, temp," &
-                     //"dzp, rho, pp," & 
-                     //"rlongup, qv, sfc_albedo," &
-                     //"jphoto(min),jphoto(max)"
-            do nc = 1,nCells
-                do nl = 1,nVertLevels
-                    write(iunit,fmt='(I4.4,",",4(F10.4,","),8(E15.6,","),1(E18.6,","),E18.6)') &
-                     nc,glat(nc),glon(nc),zt_(nl,nc),coszr(nc), &
-                     press(nl,nc), temp(nl,nc), dzp(nl,nc), rho(nl,nc), pp(nl,nc), & 
-                     rlongup(nc), qv(nl,nc), sfc_albedo(nc), &
-                     minval(jphoto(nl,nc,1:17)),maxval(jphoto(nl,nc,1:17))
-                end do
-            end do
-            close(unit=iunit)
-        end if
-    
-    end subroutine writeJphoto
-    !---
 end module modchem

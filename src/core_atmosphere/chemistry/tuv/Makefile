@@ -1,4 +1,4 @@
-.SUFFIXES: .f90 .o
+.SUFFIXES: .F90 .f90 .o
 
 all: tuv_rad
 
@@ -11,11 +11,13 @@ tuv_rad: $(OBJS)
 
 # Dependência explícita (opcional, pois o make já infere pelo nome)
 ModTuv.o: ModTuv.f90 #chem_list.o
-ModTuv_driver.o: ModTuv_driver.f90 ModTuv.o #chem_list.o
+ModTuv_driver.o: ModTuv_driver.F90 ModTuv.o #chem_list.o
 
 # Regra para compilar .f90 em .o
 .f90.o:
-	$(FC) $(FFLAGS) -c $< $(FCINCLUDES) -I.. -I../relacs_tuv -I../../../framework -I../../../external/esmf_time_f90 -I../../physics -I../
+	$(FC) $(FFLAGS) -c $< $(FCINCLUDES) -I. -I.. -I../relacs_tuv -I../../../framework -I../../../external/esmf_time_f90 -I../../physics -I../
+.F90.o:
+	$(FC) $(FFLAGS) -c $< $(FCINCLUDES) -I. -I.. -I../relacs_tuv -I../../../framework -I../../../external/esmf_time_f90 -I../../physics -I../
 
 clean:
 	$(RM) *.o *.mod *.i *.a
