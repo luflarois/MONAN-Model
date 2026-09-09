@@ -3,6 +3,8 @@ module monan_chemistry_interface
     use mpas_pool_routines
     use mpas_atmphys_constants
     use monan_chemistry_vars
+    use chem_list, only: nSpecies,spc_name
+    use modMemoryChem, only: chem_g
 
     implicit none
     private
@@ -12,7 +14,30 @@ module monan_chemistry_interface
              chemistry_to_MPAS, &
              zero_chemistry_scalars
 
+    integer :: idxChem(nSpecies)
+
     contains
+
+    !=================================================================================================================
+    ! Converte uma string ASCII para minusculas. As dimensoes de indice
+    ! geradas pelo Registry (index_o3, index_no2, ...) sao sempre em
+    ! minusculo, mas spc_name (vindo de chem_list.f90) esta em maiusculo -
+    ! por isso essa conversao e necessaria antes de montar a chave de busca.
+    !=================================================================================================================
+    pure function to_lower(str_in) result(str_out)
+       character(len=*), intent(in) :: str_in
+       character(len=len(str_in)) :: str_out
+       integer :: i, code
+
+       do i = 1, len(str_in)
+          code = iachar(str_in(i:i))
+          if (code >= iachar('A') .and. code <= iachar('Z')) then
+             str_out(i:i) = achar(code + (iachar('a') - iachar('A')))
+          else
+             str_out(i:i) = str_in(i:i)
+          end if
+       end do
+    end function to_lower
 
     !=================================================================================================================
     subroutine allocate_forall_chemistry(nCells, nVertLevels, nChemSpecies)
@@ -150,45 +175,22 @@ module monan_chemistry_interface
     real(kind=RKIND),dimension(:,:),pointer  :: qv,qc,qr,qi,qs,qg
     real(kind=RKIND),dimension(:,:,:),pointer:: scalars, chem_conc, chem_tend, chem_tend_dyn
 
-    integer:: i,k,n
+    integer:: i,k,n,spc
     real(kind=RKIND):: z0,z1,z2,w1,w2
     real(kind=RKIND):: rho_a,rho1,rho2,tem1,tem2
-
-    !print *, 'LFR-DBG: MPAS_to_chemistry: before mpas_log_write calls'; call flush(6)
-     !log some of the input parameters:
-    !-----------------------------------------------------------------------------------------------------------------
-    call mpas_log_write('')
-    call mpas_log_write('---Enter subroutine MPAS_to_chemistry:')
-    call mpas_log_write('ims=$i ime=$i',intArgs=(/ims,ime/))
-    call mpas_log_write('jms=$i jme=$i',intArgs=(/jms,jme/))
-    call mpas_log_write('kms=$i kme=$i',intArgs=(/kms,kme/))
-    call mpas_log_write('')
-    call mpas_log_write('its=$i ite=$i',intArgs=(/its,ite/))
-    call mpas_log_write('jts=$i jte=$i',intArgs=(/jts,jte/))
-    call mpas_log_write('kts=$i kte=$i',intArgs=(/kts,kte/))
+    character(len=14) :: idxChemStr
+    integer, pointer :: idxTmp
 
     !initialization:
-
     call mpas_pool_get_config(configs,'config_o3climatology' ,config_o3climatology)
 
-
-    !print *, 'LFR-DBG: MPAS_to_chemistry: before mpas_pool_get_config calls'; call flush(6)
-    !call mpas_pool_get_config(configs,'config_pbl_scheme',pbl_scheme)
-    !print *, 'LFR-DBG: MPAS_to_chemistry: before get array 01 calls'; call flush(6)
     call mpas_pool_get_array(mesh,'latCell',latCell)
-    !print *,'LFR-DBG: 01'; call flush(6)
     call mpas_pool_get_array(mesh,'lonCell',lonCell)
-    !print *,'LFR-DBG: 02'; call flush(6)
     call mpas_pool_get_array(mesh,'fzm'    ,fzm    )
-    !print *,'LFR-DBG: 03'; call flush(6)
     call mpas_pool_get_array(mesh,'fzp'    ,fzp    )
-    !print *,'LFR-DBG: 04'; call flush(6)
     call mpas_pool_get_array(mesh,'rdzw'   ,rdzw   )
-    !print *,'LFR-DBG: 05'; call flush(6)
     call mpas_pool_get_array(mesh,'zgrid'  ,zgrid  )
-    !print *,'LFR-DBG: 06'; call flush(6)
     call mpas_pool_get_array(mesh,'zz'     ,zz     )
-    !print *, 'LFR-DBG: MPAS_to_chemistry: before get array 2 calls'; call flush(6)
     call mpas_pool_get_array(diag,'surface_pressure'      ,surface_pressure)
     call mpas_pool_get_array(diag,'exner'                 ,exner           )
     call mpas_pool_get_array(diag,'pressure_base'         ,pressure_b      )
@@ -197,57 +199,48 @@ module monan_chemistry_interface
     call mpas_pool_get_array(diag,'rtheta_p'              ,rtheta_p        )
     call mpas_pool_get_array(diag,'uReconstructZonal'     ,u               )
     call mpas_pool_get_array(diag,'uReconstructMeridional',v               )
-    !Chemical species and tendencies
-    !call mpas_pool_get_array(diag,'chem_conc'             ,chem_conc     )
-    !call mpas_pool_get_array(diag,'chem_tend'             ,chem_tend     )
-    !call mpas_pool_get_array(diag,'chem_tend_dyn'         ,chem_tend_dyn )
-
-   !print *, 'LFR-DBG: MPAS_to_chemistry: before get array 3 calls'; call flush(6)
     call mpas_pool_get_array(state,'rho_zz' ,rho_zz ,time_lev)
     call mpas_pool_get_array(state,'theta_m',theta_m,time_lev)
     call mpas_pool_get_array(state,'w'      ,w      ,time_lev)
     call mpas_pool_get_array(mesh,'latCell',latCell)
-   !print *, 'LFR-DBG: MPAS_to_chemistry: getting lwupb'; call flush(6) 
     call mpas_pool_get_array(diag_physics,'lwupb' ,lwupb )
     call mpas_pool_get_array(diag_physics,'sfc_albedo',sfc_albedo)
     call mpas_pool_get_array(diag_physics,'coszr'     ,coszr     )
-   !print *,'LFR-DBG: MPAS_to_chemistry: before get dimension calls'; call flush(6)
     call mpas_pool_get_dimension(state,'index_qv',index_qv)
-    call mpas_pool_get_dimension(state,'index_qc',index_qc)
-    call mpas_pool_get_dimension(state,'index_qr',index_qr)
-    call mpas_pool_get_dimension(state,'index_qi',index_qi)
-    call mpas_pool_get_dimension(state,'index_qs',index_qs)
-    call mpas_pool_get_dimension(state,'index_qg',index_qg)
 
-   !print *, 'LFR-DBG: MPAS_to_chemistry: before get dimension calls'; call flush(6)
-    call mpas_pool_get_dimension(state,'index_qv',index_qv)
-    call mpas_pool_get_dimension(state,'index_qc',index_qc)
-    call mpas_pool_get_dimension(state,'index_qr',index_qr)
-    call mpas_pool_get_dimension(state,'index_qi',index_qi)
-    call mpas_pool_get_dimension(state,'index_qs',index_qs)
-    call mpas_pool_get_dimension(state,'index_qg',index_qg)
-   !print *, 'LFR-DBG: MPAS_to_chemistry: before get array 4 calls'; call flush(6)
     call mpas_pool_get_array(state,'scalars',scalars,time_lev)
     qv => scalars(index_qv,:,:)
-    !qc => scalars(index_qc,:,:)
-    !qr => scalars(index_qr,:,:)
-    !qi => scalars(index_qi,:,:)
-    !qs => scalars(index_qs,:,:)
-    !qg => scalars(index_qg,:,:)
 
     call mpas_pool_get_array(diag_physics,'plrad',plrad)
     call mpas_pool_get_array(diag_physics,'o3clim'    ,o3clim    )
     call mpas_pool_get_array(diag,'o3'    ,o3    )
+    
+    do spc = 1, nSpecies
+       write(idxChemStr, fmt='("index_",A)') trim(to_lower(spc_name(spc)))
+       !print *,'idxChemStr = ',trim(idxChemStr)
+       nullify(idxTmp)
+       call mpas_pool_get_dimension(state, trim(idxChemStr), idxTmp)
+    
+       if (associated(idxTmp)) then
+          idxChem(spc) = idxTmp
+       else
+          call mpas_log_write('indice nao encontrado para '//trim(spc_name(spc)), &
+               messageType=MPAS_LOG_WARN)
+          idxChem(spc) = -1   ! sentinela, pra facilitar debug depois
+       end if
+        end do
 
-!  print *, 'LFR-DBG: MPAS_to_chemistry: before filling _p arrays ',size(zgrid,1),size(zgrid,2),nVertLevels!; call flush(6)
+    do i = 1,nCells
+        do k = 1, nVertLevels
+            do spc = 1, nspecies
+                chem_g(spc)%sc_p(k,i) = scalars(idxChem(spc), k, i)
+            end do
+        end do
+    end do
+
     do i = 1,nCells
         do k = 1, nVertLevels
             qv_p(k,i) = max(0.,qv(k,i))
-!            qc_p(k,i) = max(0.,qc(k,i))
-!            qr_p(k,i) = max(0.,qr(k,i))
-!            qi_p(k,i) = max(0.,qi(k,i))
-!            qs_p(k,i) = max(0.,qs(k,i))
-!            qg_p(k,i) = max(0.,qg(k,i))
 
             u_p(k,i) = u(k,i)
             v_p(k,i) = v(k,i)
@@ -264,13 +257,6 @@ module monan_chemistry_interface
             zmid_p(k,i) = 0.5*(zgrid(k+1,i)+zgrid(k,i))
             dz_p(k,i)   = zgrid(k+1,i)-zgrid(k,i)
 
-            !do n = 1, nChemSpecies
-            !    chem_conc_p(k,i,n) = chem_conc(k,i,n)
-            !    chem_tend_p(k,i,n) = chem_tend(k,i,n)
-            !    chem_tend_dyn_p(k,i,n) = chem_tend_dyn(k,i,n)
-            !end do
-
-            !o3_p(k,i)   = o3(k,i)
         end do
     end do
  !print *, 'LFR-DBG: MPAS_to_chemistry: after filling _p arrays'; call flush(6)
@@ -281,13 +267,6 @@ module monan_chemistry_interface
         sfc_albedo_p(i) = sfc_albedo(i)
         coszr_p(i)      = coszr(i)
     end do
-
-    ! O3 climatology
-   !  do i = 1,nCells
-   !      do k = 1, num_oznlevels
-   !          o3clim_p(k,i) = o3clim(k,i)
-   !      end do
-   !  end do
 
     !print *, 'LFR-DBG: MPAS_to_chemistry: calculating surface pressure (hydrostatic)'; call flush(6)
     do i = 1,nCells
@@ -382,72 +361,27 @@ module monan_chemistry_interface
 
     end subroutine MPAS_to_chemistry
 
-   !  !=================================================================================================================
-   !  subroutine chemistry_from_MPAS(configs,mesh,state,time_lev,diag,diag_physics,its,ite)
-   !  !=================================================================================================================
-   !  type(mpas_pool_type),intent(in):: configs
-   !  type(mpas_pool_type),intent(in):: mesh
-   !  type(mpas_pool_type),intent(in):: state
-   !  type(mpas_pool_type),intent(in):: diag
-   !  type(mpas_pool_type),intent(in):: diag_physics
-   !  integer,intent(in):: its,ite
-   !  integer:: time_lev
-
-   !  character(len=StrKIND),pointer:: microp_scheme
-   !  integer,pointer:: index_qv,index_qc,index_qr,index_qi,index_qs,index_qg
-   !  real(kind=RKIND),dimension(:,:),pointer  :: zgrid,zz,exner,pressure_b,pressure_p
-   !  real(kind=RKIND),dimension(:,:),pointer  :: rho_zz,theta_m,w
-   !  real(kind=RKIND),dimension(:,:),pointer  :: qv,qc,qr
-   !  real(kind=RKIND),dimension(:,:,:),pointer:: scalars
-
-   !  integer:: i,k
-
-   !  ! (código de obtenção de ponteiros omitido)
-
-   !  do i = 1,nCells
-   !      do k = 1, nVertLevels
-   !          qv_p(k,i) = qv(k,i)
-   !          qc_p(k,i) = qc(k,i)
-   !          qr_p(k,i) = qr(k,i)
-
-   !          rho_p(k,i)  = zz(k,i) * rho_zz(k,i)
-   !          th_p(k,i)   = theta_m(k,i) / (1._RKIND + R_v/R_d * max(0._RKIND,qv_p(k,i)))
-   !          pi_p(k,i)   = exner(k,i)
-   !          pres_p(k,i) = pressure_b(k,i) + pressure_p(k,i)
-   !          z_p(k,i)    = zgrid(k,i)
-   !          dz_p(k,i)   = zgrid(k+1,i) - zgrid(k,i)
-   !          w_p(k,i)    = w(k,i)
-   !      end do
-   !  end do
-
-   !  end subroutine chemistry_from_MPAS
 
      !=================================================================================================================
-     subroutine chemistry_to_MPAS(configs,diag,nChemSpecies,nVertLevels,nCells)
+     subroutine chemistry_to_MPAS(configs,state,time_lev,nCells, nVertLevels)
      !=================================================================================================================
-     integer,intent(in):: nChemSpecies, nVertLevels, nCells
+     integer,intent(in):: nVertLevels, nCells
      type(mpas_pool_type),intent(in):: configs
-     type(mpas_pool_type),intent(inout):: diag
+     type(mpas_pool_type),intent(in):: state
+     integer,intent(in):: time_lev
 
+     integer :: i,k,spc
+     real(kind=RKIND),dimension(:,:,:),pointer:: scalars
 
-    real(kind=RKIND),dimension(:,:,:),pointer:: chem_conc, chem_tend, chem_tend_dyn
+     call mpas_pool_get_array(state,'scalars',scalars,time_lev)
 
-    integer :: i,k,n
-
-    call mpas_pool_get_array(diag,'chem_conc'             ,chem_conc     )
-    call mpas_pool_get_array(diag,'chem_tend'             ,chem_tend     )
-    call mpas_pool_get_array(diag,'chem_tend_dyn'         ,chem_tend_dyn )
-
-    do n=1, nChemSpecies
-        do i = 1,nCells
-            do k = 1, nVertLevels
-                chem_conc(k,i,n) = chem_conc_p(k,i,n)
-                chem_tend(k,i,n) = chem_tend_p(k,i,n)
-                chem_tend_dyn(k,i,n) = chem_tend_dyn_p(k,i,n)
+     do i = 1,nCells
+        do k = 1, nVertLevels
+            do spc = 1, nspecies
+                scalars(idxChem(spc), k, i) = chem_g(spc)%sc_p(k,i)
             end do
         end do
-    end do
-
+     end do
 
    end subroutine chemistry_to_MPAS
 

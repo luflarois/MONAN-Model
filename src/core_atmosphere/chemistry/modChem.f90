@@ -131,12 +131,7 @@ contains
         call mpas_pool_get_config(block % configs, 'config_dt', config_dt)
 
         call mpas_get_time(curr_time=currTime, dateTimeString=timeStamp, ierr=ierr)
-        call mpas_pool_get_array(state, 'scalars', scalars, 1)  ! timeLevel 1
-        call mpas_pool_get_dimension(state,'index_no2',index_no2)
 
-        !no2_local = scalars(index_no2, 1, 1)    
-
-        !no2_local = 555.0
 
          !- set the number of dynamics cycles inside each chemistry cycle:
          !- observe that 'config_dt' (timestep of grid) is used.
@@ -233,7 +228,7 @@ if (iTimestep == 1) call mapChemToGridNearest(xlat_p, xlon_p, nCells, nVertLevel
 !  , start_date = "20220714000000"  &
 !    )
 
-!                call chemistry_to_MPAS(block%configs,diag,nSpecies,nVertLevels,nCells)
+                call chemistry_to_MPAS(block%configs,state,time_lev,nCells, nVertLevels)
 
                 call deallocate_forall_chemistry(block%configs)
             end if !End of valid

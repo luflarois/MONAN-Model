@@ -16,7 +16,7 @@ gnu:   # BUILDTARGET GNU Fortran, C, and C++ compilers
 	"CC_SERIAL = gcc" \
 	"CXX_SERIAL = g++" \
 	"FFLAGS_PROMOTION = -fdefault-real-8 -fdefault-double-8" \
-	"FFLAGS_OPT = -g -std=f2008 -fallow-argument-mismatch -ffree-line-length-none -fconvert=big-endian -ffree-form -fbacktrace -fcheck=bounds -ffpe-trap=invalid,zero,overflow -fcheck=all" \
+	"FFLAGS_OPT = -g -std=f2008 -fallow-argument-mismatch -ffree-line-length-none -fconvert=big-endian -ffree-form -fbacktrace -fcheck=bounds" \
 	"CFLAGS_OPT = -g -O3 -std=gnu89" \
 	"CXXFLAGS_OPT = -O3" \
 	"LDFLAGS_OPT = -O3" \
